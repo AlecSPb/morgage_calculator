@@ -8,6 +8,8 @@ class MortGageInputPage extends StatefulWidget {
 
 class _MortGageInputPageState extends State<MortGageInputPage> {
   static final _formKey = GlobalKey<FormState>();
+  int _creditTerm;
+  double _creditSum, _creditPercents;
 
   FocusNode _creditSumFocusNode, _creditTermFocusNode, _creditPercentsFocusNode;
 
@@ -58,6 +60,11 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           ],
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
+                          onSaved: (val) =>
+                              _creditSum = double.tryParse(val) ?? 0.0,
+                          validator: (val) => val.trim().isEmpty
+                              ? "Обозначте сумму кредиту"
+                              : null,
                           onFieldSubmitted: (v) => FocusScope.of(context)
                               .requestFocus(_creditTermFocusNode),
                         ),
@@ -77,6 +84,11 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                               WhitelistingTextInputFormatter.digitsOnly
                             ],
                             keyboardType: TextInputType.number,
+                            onSaved: (val) =>
+                                _creditTerm = int.tryParse(val) ?? 0,
+                            validator: (val) => val.trim().isEmpty
+                                ? "Обозначте срок кредита"
+                                : null,
                             textInputAction: TextInputAction.next,
                             onFieldSubmitted: (v) => FocusScope.of(context)
                                 .requestFocus(_creditPercentsFocusNode)),
@@ -95,6 +107,11 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           inputFormatters: [
                             WhitelistingTextInputFormatter.digitsOnly
                           ],
+                          onSaved: (val) =>
+                          _creditPercents = double.tryParse(val) ?? 0.0,
+                          validator: (val) => val.trim().isEmpty
+                              ? "Обозначте процентную ставку"
+                              : null,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
                           onFieldSubmitted: (v) => _handleCalculate(),
@@ -113,6 +130,9 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
   }
 
   void _handleCalculate() {
-    print("CALCULATE");
+    if(_formKey.currentState.validate()){
+      _formKey.currentState.save();
+      print("CALCULATE: $_creditSum, $_creditTerm, $_creditPercents");
+    }
   }
 }
