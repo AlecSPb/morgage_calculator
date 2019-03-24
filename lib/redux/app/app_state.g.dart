@@ -13,17 +13,26 @@ class _$AppState extends AppState {
   final Event<Exception> domainEventException;
   @override
   final AuthState authState;
+  @override
+  final MortGageViewState mortGageViewState;
 
   factory _$AppState([void updates(AppStateBuilder b)]) =>
       (new AppStateBuilder()..update(updates)).build();
 
-  _$AppState._({this.isLoading, this.domainEventException, this.authState})
+  _$AppState._(
+      {this.isLoading,
+      this.domainEventException,
+      this.authState,
+      this.mortGageViewState})
       : super._() {
     if (isLoading == null) {
       throw new BuiltValueNullFieldError('AppState', 'isLoading');
     }
     if (authState == null) {
       throw new BuiltValueNullFieldError('AppState', 'authState');
+    }
+    if (mortGageViewState == null) {
+      throw new BuiltValueNullFieldError('AppState', 'mortGageViewState');
     }
   }
 
@@ -40,14 +49,16 @@ class _$AppState extends AppState {
     return other is AppState &&
         isLoading == other.isLoading &&
         domainEventException == other.domainEventException &&
-        authState == other.authState;
+        authState == other.authState &&
+        mortGageViewState == other.mortGageViewState;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc(0, isLoading.hashCode), domainEventException.hashCode),
-        authState.hashCode));
+        $jc($jc($jc(0, isLoading.hashCode), domainEventException.hashCode),
+            authState.hashCode),
+        mortGageViewState.hashCode));
   }
 
   @override
@@ -55,7 +66,8 @@ class _$AppState extends AppState {
     return (newBuiltValueToStringHelper('AppState')
           ..add('isLoading', isLoading)
           ..add('domainEventException', domainEventException)
-          ..add('authState', authState))
+          ..add('authState', authState)
+          ..add('mortGageViewState', mortGageViewState))
         .toString();
   }
 }
@@ -77,6 +89,12 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _$this._authState ??= new AuthStateBuilder();
   set authState(AuthStateBuilder authState) => _$this._authState = authState;
 
+  MortGageViewStateBuilder _mortGageViewState;
+  MortGageViewStateBuilder get mortGageViewState =>
+      _$this._mortGageViewState ??= new MortGageViewStateBuilder();
+  set mortGageViewState(MortGageViewStateBuilder mortGageViewState) =>
+      _$this._mortGageViewState = mortGageViewState;
+
   AppStateBuilder();
 
   AppStateBuilder get _$this {
@@ -84,6 +102,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _isLoading = _$v.isLoading;
       _domainEventException = _$v.domainEventException;
       _authState = _$v.authState?.toBuilder();
+      _mortGageViewState = _$v.mortGageViewState?.toBuilder();
       _$v = null;
     }
     return this;
@@ -110,12 +129,15 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
           new _$AppState._(
               isLoading: isLoading,
               domainEventException: domainEventException,
-              authState: authState.build());
+              authState: authState.build(),
+              mortGageViewState: mortGageViewState.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'authState';
         authState.build();
+        _$failedField = 'mortGageViewState';
+        mortGageViewState.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'AppState', _$failedField, e.toString());

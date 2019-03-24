@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:road_keeper_mobile/block/motgage_calculate/mortgage_calculate_block.dart';
-import 'package:road_keeper_mobile/data/models/mort_gage_view_state.dart';
+import 'package:road_keeper_mobile/redux/mortgage/mort_gage_view_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 
 class MortGageInputPage extends StatefulWidget {
