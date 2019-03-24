@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:road_keeper_mobile/block/motgage_calculate/mortgage_calculate_block.dart';
+import 'package:road_keeper_mobile/data/models/mort_gage_view_state.dart';
+import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 
 class MortGageInputPage extends StatefulWidget {
   @override
@@ -9,9 +12,12 @@ class MortGageInputPage extends StatefulWidget {
 class _MortGageInputPageState extends State<MortGageInputPage> {
   static final _formKey = GlobalKey<FormState>();
   int _creditTerm;
-  double _creditSum, _creditPercents;
+  double _creditSum, _creditPercents, _planned_payment;
 
-  FocusNode _creditSumFocusNode, _creditTermFocusNode, _creditPercentsFocusNode;
+  FocusNode _creditSumFocusNode,
+      _creditTermFocusNode,
+      _creditPercentsFocusNode,
+      _plannedPaymentFocusNode;
 
   @override
   void initState() {
@@ -31,6 +37,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mortGageBlock = MortGageProvider.of(context);
     return Scaffold(
         appBar: AppBar(title: Text("MortGage calculator")),
         body: SafeArea(
@@ -99,7 +106,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             filled: true,
-                            icon: Icon(Icons.attach_money),
+                            icon: Icon(Icons.all_inclusive),
                             hintText: "Обозначте кредитную ставку",
                             labelText: "Кредитная ставка",
                           ),
@@ -108,13 +115,29 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                             WhitelistingTextInputFormatter.digitsOnly
                           ],
                           onSaved: (val) =>
-                          _creditPercents = double.tryParse(val) ?? 0.0,
+                              _creditPercents = double.tryParse(val) ?? 0.0,
                           validator: (val) => val.trim().isEmpty
                               ? "Обозначте процентную ставку"
                               : null,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
-                          onFieldSubmitted: (v) => _handleCalculate(),
+                          onFieldSubmitted: (v) => _handleCalculate(mortGageBlock),
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            filled: true,
+                            icon: Icon(Icons.account_balance_wallet),
+                            hintText: "Обозначте планируемую сумму платежа",
+                            labelText: "Планируемый платеж",
+                          ),
+                          focusNode: _plannedPaymentFocusNode,
+                          keyboardType: TextInputType.number,
+                          onSaved: (val) =>
+                          _planned_payment = double.tryParse(val) ?? 0.0,
                         ),
                         SizedBox(
                           height: 16,
@@ -122,17 +145,55 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                         Center(
                           child: RaisedButton(
                             child: const Text("РАССЧИТАТЬ"),
-                            onPressed: _handleCalculate,
+                            onPressed: (){_handleCalculate(mortGageBlock);},
                           ),
-                        )
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        _getResultRow(mortGageBlock)
                       ],
                     )))));
   }
 
-  void _handleCalculate() {
-    if(_formKey.currentState.validate()){
+  Widget _getResultRow(MortGageCalculateBlock mortGageBlock,
+      {String creditEndTerm, String totalSum, String overpayment}) {
+    return StreamBuilder<MortGageViewState>(
+      stream: mortGageBlock.viewState,
+      builder: (context, snapshot) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Срок погашения, мес.:"),
+                Text(snapshot.data?.paymentsList?.length?.toString() ?? "_")
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[Text("Общая сумма:"), Text(snapshot.data?.totalSum?.toString() ?? "_")],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[Text("Переплата:"), Text(snapshot.data?.overPay?.toString() ?? "_")],
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  void _handleCalculate(MortGageCalculateBlock block) {
+    if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      print("CALCULATE: $_creditSum, $_creditTerm, $_creditPercents");
+      block.action.add(CalculateCreditAction((b)=>
+          b..creditSum = _creditSum
+          ..creditTerm = _creditTerm
+          ..creditPercents = _creditPercents
+          ..estimatedPayment = _planned_payment
+      ));
     }
   }
 }

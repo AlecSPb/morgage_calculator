@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:intl/intl.dart';
 import 'package:redux/redux.dart';
+import 'package:road_keeper_mobile/block/motgage_calculate/mortgage_calculate_block.dart';
 import 'package:road_keeper_mobile/redux/app/app_middleware.dart';
 import 'package:road_keeper_mobile/redux/app/app_reducer.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
@@ -21,35 +22,40 @@ void main() {
     initialState: AppState(),
     middleware: createAppMiddleware(),
   );
-  runApp(MyApp(store));
+  final mortGageBlock = MortGageCalculateBlock();
+  runApp(MyApp(store, mortGageBlock));
 }
 
 class MyApp extends StatelessWidget {
   final Store<AppState> store;
-  MyApp(this.store);
+  final MortGageCalculateBlock mortGageBlock;
+  MyApp(this.store, this.mortGageBlock);
   @override
   Widget build(BuildContext context) {
     return StoreProvider(
       store: store,
-      child: MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+      child: MortGageProvider(
+        mortGage: mortGageBlock,
+        child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('en', 'US'),
+            const Locale('ru', 'RU'),
+          ],
+          home: MortGageInputPage(),
+          routes: {
+            LoginScreenVM.route: (context) =>
+                RootContainer(child: LoginScreenVM()),
+            HomePage.route: (context) => HomePage(),
+            PhotoMapPage.route: (context) => PhotoMapPage(),
+          },
         ),
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en', 'US'),
-          const Locale('ru', 'RU'),
-        ],
-        home: MortGageInputPage(),
-        routes: {
-          LoginScreenVM.route: (context) =>
-              RootContainer(child: LoginScreenVM()),
-          HomePage.route: (context) => HomePage(),
-          PhotoMapPage.route: (context) => PhotoMapPage(),
-        },
       ),
     );
   }

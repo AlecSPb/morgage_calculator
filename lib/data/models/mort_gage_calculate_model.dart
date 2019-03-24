@@ -7,17 +7,6 @@ class MortGageCalculateInput {
       this.estimatedPayment);
 }
 
-class MortGageCalculatorOutputRow {
-  final double creditResidue;
-  final double mainPayment;
-  final double percentPayment;
-  final double totalPayment;
-  final double additionalPayment;
-  MortGageCalculatorOutputRow(
-      {@required this.creditResidue,
-      @required this.mainPayment,
-      @required this.percentPayment,
-      @required this.totalPayment,
-      this.additionalPayment = 0.0
-      });
-}
+
+
+
