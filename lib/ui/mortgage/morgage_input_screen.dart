@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:road_keeper_mobile/block/motgage_calculate/mortgage_calculate_block.dart';
-import 'package:road_keeper_mobile/redux/mortgage/mort_gage_view_state.dart';
+import 'package:road_keeper_mobile/redux/app/app_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
+import 'package:road_keeper_mobile/ui/mortgage/mort_gage_vm.dart';
+
+class MortGageInputPageContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StoreConnector<AppState, MortGageVm>(
+      distinct: true,
+      converter: MortGageVm.fromStore,
+      builder: (BuildContext context, MortGageVm) =>
+          MortGageInputPage(MortGageVm),
+    );
+  }
+}
 
 class MortGageInputPage extends StatefulWidget {
+  final MortGageVm viewModel;
+
+  MortGageInputPage(this.viewModel, {Key key}) : super(key: key);
+
   @override
   _MortGageInputPageState createState() => _MortGageInputPageState();
 }
@@ -121,7 +139,8 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                               : null,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
-                          onFieldSubmitted: (v) => _handleCalculate(mortGageBlock),
+                          onFieldSubmitted: (v) =>
+                              _handleCalculate(mortGageBlock),
                         ),
                         SizedBox(
                           height: 16,
@@ -137,7 +156,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           focusNode: _plannedPaymentFocusNode,
                           keyboardType: TextInputType.number,
                           onSaved: (val) =>
-                          _planned_payment = double.tryParse(val) ?? 0.0,
+                              _planned_payment = double.tryParse(val) ?? 0.0,
                         ),
                         SizedBox(
                           height: 16,
@@ -145,55 +164,55 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                         Center(
                           child: RaisedButton(
                             child: const Text("РАССЧИТАТЬ"),
-                            onPressed: (){_handleCalculate(mortGageBlock);},
+                            onPressed: () {
+                              _handleCalculate(mortGageBlock);
+                            },
                           ),
                         ),
                         SizedBox(
                           height: 16,
                         ),
-                        _getResultRow(mortGageBlock)
+                        _getResultRow(
+                          creditEndTerm: widget.viewModel.creditMounthCount,
+                          totalSum: widget.viewModel.totalSum,
+                          overpayment: widget.viewModel.overPay,
+                        )
                       ],
                     )))));
   }
 
-  Widget _getResultRow(MortGageCalculateBlock mortGageBlock,
+  Widget _getResultRow(
       {String creditEndTerm, String totalSum, String overpayment}) {
-    return StreamBuilder<MortGageViewState>(
-      stream: mortGageBlock.viewState,
-      builder: (context, snapshot) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Срок погашения, мес.:"),
-                Text(snapshot.data?.paymentsList?.length?.toString() ?? "_")
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[Text("Общая сумма:"), Text(snapshot.data?.totalSum?.toString() ?? "_")],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[Text("Переплата:"), Text(snapshot.data?.overPay?.toString() ?? "_")],
-            ),
+            Text("Срок погашения, мес.:"),
+            Text(creditEndTerm ?? "_")
           ],
-        );
-      }
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[Text("Общая сумма:"), Text(totalSum ?? "_")],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[Text("Переплата:"), Text(overpayment ?? "_")],
+        ),
+      ],
     );
   }
 
   void _handleCalculate(MortGageCalculateBlock block) {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      block.action.add(CalculateCreditAction((b)=>
-          b..creditSum = _creditSum
-          ..creditTerm = _creditTerm
-          ..creditPercents = _creditPercents
-          ..estimatedPayment = _planned_payment
-      ));
+      widget.viewModel.storeAction(CalculateCreditAction((b) => b
+        ..creditSum = _creditSum
+        ..creditTerm = _creditTerm
+        ..creditPercents = _creditPercents
+        ..estimatedPayment = _planned_payment));
     }
   }
 }

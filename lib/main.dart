@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
             const Locale('en', 'US'),
             const Locale('ru', 'RU'),
           ],
-          home: MortGageInputPage(),
+          home: MortGageInputPageContainer(),
           routes: {
             LoginScreenVM.route: (context) =>
                 RootContainer(child: LoginScreenVM()),
