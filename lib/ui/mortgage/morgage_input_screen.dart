@@ -42,6 +42,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
     _creditPercentsFocusNode = FocusNode();
     _creditTermFocusNode = FocusNode();
     _creditSumFocusNode = FocusNode();
+    _plannedPaymentFocusNode = FocusNode();
     super.initState();
   }
 
@@ -81,7 +82,8 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           ),
                           focusNode: _creditSumFocusNode,
                           inputFormatters: [
-                            WhitelistingTextInputFormatter.digitsOnly
+                            WhitelistingTextInputFormatter.digitsOnly,
+                            _NumberDigitTextFormatter()
                           ],
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
@@ -129,8 +131,8 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                             labelText: "Кредитная ставка",
                           ),
                           focusNode: _creditPercentsFocusNode,
-                          inputFormatters: [
-                            WhitelistingTextInputFormatter.digitsOnly
+                           inputFormatters: [
+                            _OneDotNumberTextFormatter()
                           ],
                           onSaved: (val) =>
                               _creditPercents = double.tryParse(val) ?? 0.0,
@@ -138,9 +140,9 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                               ? "Обозначте процентную ставку"
                               : null,
                           keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.done,
-                          onFieldSubmitted: (v) =>
-                              _handleCalculate(mortGageBlock),
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (v) => FocusScope.of(context)
+                              .requestFocus(_plannedPaymentFocusNode),
                         ),
                         SizedBox(
                           height: 16,
@@ -155,8 +157,13 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           ),
                           focusNode: _plannedPaymentFocusNode,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly,
+                            _NumberDigitTextFormatter()
+                          ],
                           onSaved: (val) =>
                               _planned_payment = double.tryParse(val) ?? 0.0,
+                          onFieldSubmitted: (v) => _handleCalculate(),
                         ),
                         SizedBox(
                           height: 16,
@@ -165,7 +172,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           child: RaisedButton(
                             child: const Text("РАССЧИТАТЬ"),
                             onPressed: () {
-                              _handleCalculate(mortGageBlock);
+                              _handleCalculate();
                             },
                           ),
                         ),
@@ -205,7 +212,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
     );
   }
 
-  void _handleCalculate(MortGageCalculateBlock block) {
+  void _handleCalculate() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       widget.viewModel.storeAction(CalculateCreditAction((b) => b
@@ -215,4 +222,57 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
         ..estimatedPayment = _planned_payment));
     }
   }
+}
+
+///Format incoming numeric text to fit the format of 1 000 000
+class _NumberDigitTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final int newTextLength = newValue.text.length;
+    int selectionIndex = newValue.selection.end;
+    if (newTextLength <= 3) return newValue;
+
+    final newTextBuffer = StringBuffer();
+    for (var index = (newTextLength - 1); index >= 0; index--) {
+      var revertedIndex = newTextLength - index;
+      newTextBuffer.write(newValue.text[index]);
+      if (revertedIndex % 3 == 0 && index != 0) {
+        newTextBuffer.write(" ");
+        selectionIndex++;
+      }
+    }
+    final newText = newTextBuffer.toString().split('').reversed.join();
+
+    return TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(offset: selectionIndex));
+  }
+}
+
+class _OneDotNumberTextFormatter extends TextInputFormatter{
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    final int newTextLength = newValue.text.length;
+    int selectionIndex = newValue.selection.end;
+    final newTextBuffer = StringBuffer();
+
+    int dotCounter = 0;
+    for(var index = 0; index < newTextLength; index++){
+      var currChar = newValue.text[index];
+      if(currChar == "." || currChar == ","){
+        ++dotCounter;
+        if(dotCounter == 1 && index != 0){
+          newTextBuffer.write(".");
+        }
+        else --selectionIndex;
+        continue;
+      }
+      newTextBuffer.write(currChar);
+    }
+    return TextEditingValue(
+        text: newTextBuffer.toString(),
+        selection: TextSelection.collapsed(offset: selectionIndex));
+  }
+
 }
