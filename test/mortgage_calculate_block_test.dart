@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:road_keeper_mobile/block/motgage_calculate/mortgage_calculate_block.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 import 'package:test_api/test_api.dart';
@@ -16,5 +17,13 @@ void main() {
       print(
           "$index   ${row.creditResidual}   ${row.totalPayment}  ${row.additionalPayment}");
     }
+  });
+
+  test("number_format_test",(){
+    var _numberFormat = NumberFormat("0.00");
+    var a = -12.596;
+    var b = 32.456;
+    print(_numberFormat.format(a));
+
   });
 }
