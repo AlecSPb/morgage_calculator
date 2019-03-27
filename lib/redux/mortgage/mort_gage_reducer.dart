@@ -53,11 +53,12 @@ BuiltList<MortGageCalcOutRow> _calculateCreditPaymentsList(
     var nextAdditionalPayment =
         (input.estimatedPayment ?? 0) - nextCreditPayment;
     var additionalPayment = (nextAdditionalPayment > 0)
-        ? ((currentCreditResidual == 0)
-        ? (prevRow.creditResidual - nextCreditPayment)
+        ? ((currentCreditResidual <= nextAdditionalPayment)
+        ? (currentCreditResidual - nextCreditPayment)
         : nextAdditionalPayment)
         : 0.0;
 
+    if(currentCreditResidual == 0) break;
     var nextRow = MortGageCalcOutRow((b) => b
       ..creditResidual = currentCreditResidual
       ..percentPayment = nextPercentsPayment
@@ -65,6 +66,7 @@ BuiltList<MortGageCalcOutRow> _calculateCreditPaymentsList(
       ..totalPayment = nextCreditPayment
       ..additionalPayment = additionalPayment);
     result.add(nextRow);
+    if(currentCreditResidual <= nextAdditionalPayment) break;
   }
 
   return BuiltList(result);
@@ -74,6 +76,7 @@ double _calculateTotalPay(List<MortGageCalcOutRow> pays) {
   var result = 0.0;
   for (var pay in pays) {
     result += pay.totalPayment;
+    result += pay.additionalPayment;
   }
   return result;
 }
