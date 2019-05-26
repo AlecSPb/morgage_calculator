@@ -37,6 +37,10 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
       _creditPercentsFocusNode,
       _plannedPaymentFocusNode;
 
+  String _removeWhiteSpaces(String value) {
+    return value.replaceAll(" ", "");
+  }
+
   @override
   void initState() {
     _creditPercentsFocusNode = FocusNode();
@@ -87,9 +91,9 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           ],
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
-                          onSaved: (val) =>
-                              _creditSum = double.tryParse(val) ?? 0.0,
-                          validator: (val) => val.trim().isEmpty
+                          onSaved: (val) => _creditSum =
+                              double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
+                          validator: (val) => _removeWhiteSpaces(val).isEmpty
                               ? "Обозначте сумму кредиту"
                               : null,
                           onFieldSubmitted: (v) => FocusScope.of(context)
@@ -111,9 +115,9 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                               WhitelistingTextInputFormatter.digitsOnly
                             ],
                             keyboardType: TextInputType.number,
-                            onSaved: (val) =>
-                                _creditTerm = int.tryParse(val) ?? 0,
-                            validator: (val) => val.trim().isEmpty
+                            onSaved: (val) => _creditTerm =
+                                int.tryParse(_removeWhiteSpaces(val)) ?? 0,
+                            validator: (val) => _removeWhiteSpaces(val).isEmpty
                                 ? "Обозначте срок кредита"
                                 : null,
                             textInputAction: TextInputAction.next,
@@ -131,12 +135,10 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                             labelText: "Кредитная ставка",
                           ),
                           focusNode: _creditPercentsFocusNode,
-                           inputFormatters: [
-                            _OneDotNumberTextFormatter()
-                          ],
-                          onSaved: (val) =>
-                              _creditPercents = double.tryParse(val) ?? 0.0,
-                          validator: (val) => val.trim().isEmpty
+                          inputFormatters: [_OneDotNumberTextFormatter()],
+                          onSaved: (val) => _creditPercents =
+                              double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
+                          validator: (val) => _removeWhiteSpaces(val).isEmpty
                               ? "Обозначте процентную ставку"
                               : null,
                           keyboardType: TextInputType.number,
@@ -161,8 +163,8 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                             WhitelistingTextInputFormatter.digitsOnly,
                             _NumberDigitTextFormatter()
                           ],
-                          onSaved: (val) =>
-                              _planned_payment = double.tryParse(val) ?? 0.0,
+                          onSaved: (val) => _planned_payment =
+                              double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
                           onFieldSubmitted: (v) => _handleCalculate(),
                         ),
                         SizedBox(
@@ -250,22 +252,23 @@ class _NumberDigitTextFormatter extends TextInputFormatter {
   }
 }
 
-class _OneDotNumberTextFormatter extends TextInputFormatter{
+class _OneDotNumberTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     final int newTextLength = newValue.text.length;
     int selectionIndex = newValue.selection.end;
     final newTextBuffer = StringBuffer();
 
     int dotCounter = 0;
-    for(var index = 0; index < newTextLength; index++){
+    for (var index = 0; index < newTextLength; index++) {
       var currChar = newValue.text[index];
-      if(currChar == "." || currChar == ","){
+      if (currChar == "." || currChar == ",") {
         ++dotCounter;
-        if(dotCounter == 1 && index != 0){
+        if (dotCounter == 1 && index != 0) {
           newTextBuffer.write(".");
-        }
-        else --selectionIndex;
+        } else
+          --selectionIndex;
         continue;
       }
       newTextBuffer.write(currChar);
@@ -274,5 +277,4 @@ class _OneDotNumberTextFormatter extends TextInputFormatter{
         text: newTextBuffer.toString(),
         selection: TextSelection.collapsed(offset: selectionIndex));
   }
-
 }
