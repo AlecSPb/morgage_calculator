@@ -198,7 +198,10 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Срок погашения:",textAlign: TextAlign.center,),
+            Text(
+              "Срок погашения:",
+              textAlign: TextAlign.center,
+            ),
             Text(creditEndTerm ?? "_")
           ],
         ),
