@@ -7,6 +7,9 @@ import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 import 'package:road_keeper_mobile/ui/mortgage/mort_gage_vm.dart';
 
 class MortGageInputPageContainer extends StatelessWidget {
+
+  const MortGageInputPageContainer({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, MortGageVm>(
@@ -31,6 +34,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
   static final _formKey = GlobalKey<FormState>();
   int _creditTerm;
   double _creditSum, _creditPercents, _planned_payment;
+  bool _plannedPaymentCheck = false;
 
   FocusNode _creditSumFocusNode,
       _creditTermFocusNode,
@@ -60,134 +64,147 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
 
   @override
   Widget build(BuildContext context) {
-    final mortGageBlock = MortGageProvider.of(context);
-    return Scaffold(
-        appBar: AppBar(title: Text("MortGage calculator")),
-        body: SafeArea(
-            top: false,
-            bottom: false,
-            child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return SafeArea(
+        top: false,
+        bottom: false,
+        child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 24.0,
+                    ),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        filled: true,
+                        icon: Icon(Icons.attach_money),
+                        hintText: "Обозначте сумму кредита",
+                        labelText: "Сумма кредита",
+                      ),
+                      focusNode: _creditSumFocusNode,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly,
+                        _NumberDigitTextFormatter()
+                      ],
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
+                      onSaved: (val) => _creditSum =
+                          double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
+                      validator: (val) => _removeWhiteSpaces(val).isEmpty
+                          ? "Обозначте сумму кредиту"
+                          : null,
+                      onFieldSubmitted: (v) => FocusScope.of(context)
+                          .requestFocus(_creditTermFocusNode),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    TextFormField(
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          filled: true,
+                          icon: Icon(Icons.timer),
+                          hintText: "Обозначте срок кредита",
+                          labelText: "Срок кредита, мес",
+                        ),
+                        focusNode: _creditTermFocusNode,
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ],
+                        keyboardType: TextInputType.number,
+                        onSaved: (val) => _creditTerm =
+                            int.tryParse(_removeWhiteSpaces(val)) ?? 0,
+                        validator: (val) => _removeWhiteSpaces(val).isEmpty
+                            ? "Обозначте срок кредита"
+                            : null,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (v) => FocusScope.of(context)
+                            .requestFocus(_creditPercentsFocusNode)),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        filled: true,
+                        icon: Icon(Icons.all_inclusive),
+                        hintText: "Обозначте кредитную ставку",
+                        labelText: "Кредитная ставка",
+                      ),
+                      focusNode: _creditPercentsFocusNode,
+                      inputFormatters: [_OneDotNumberTextFormatter()],
+                      onSaved: (val) => _creditPercents =
+                          double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
+                      validator: (val) => _removeWhiteSpaces(val).isEmpty
+                          ? "Обозначте процентную ставку"
+                          : null,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (v) => FocusScope.of(context)
+                          .requestFocus(_plannedPaymentFocusNode),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Row(
                       children: <Widget>[
-                        SizedBox(
-                          height: 24.0,
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            filled: true,
-                            icon: Icon(Icons.attach_money),
-                            hintText: "Обозначте сумму кредита",
-                            labelText: "Сумма кредита",
-                          ),
-                          focusNode: _creditSumFocusNode,
-                          inputFormatters: [
-                            WhitelistingTextInputFormatter.digitsOnly,
-                            _NumberDigitTextFormatter()
-                          ],
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          onSaved: (val) => _creditSum =
-                              double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
-                          validator: (val) => _removeWhiteSpaces(val).isEmpty
-                              ? "Обозначте сумму кредиту"
-                              : null,
-                          onFieldSubmitted: (v) => FocusScope.of(context)
-                              .requestFocus(_creditTermFocusNode),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        TextFormField(
+                        Flexible(
+                          child: TextFormField(
                             decoration: const InputDecoration(
                               border: UnderlineInputBorder(),
                               filled: true,
-                              icon: Icon(Icons.timer),
-                              hintText: "Обозначте срок кредита",
-                              labelText: "Срок кредита, мес",
+                              icon: Icon(Icons.account_balance_wallet),
+                              hintText:
+                              "Обозначте планируемую сумму платежа",
+                              labelText: "Планируемый платеж",
                             ),
-                            focusNode: _creditTermFocusNode,
-                            inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
+                            focusNode: _plannedPaymentFocusNode,
                             keyboardType: TextInputType.number,
-                            onSaved: (val) => _creditTerm =
-                                int.tryParse(_removeWhiteSpaces(val)) ?? 0,
-                            validator: (val) => _removeWhiteSpaces(val).isEmpty
-                                ? "Обозначте срок кредита"
-                                : null,
-                            textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (v) => FocusScope.of(context)
-                                .requestFocus(_creditPercentsFocusNode)),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            filled: true,
-                            icon: Icon(Icons.all_inclusive),
-                            hintText: "Обозначте кредитную ставку",
-                            labelText: "Кредитная ставка",
-                          ),
-                          focusNode: _creditPercentsFocusNode,
-                          inputFormatters: [_OneDotNumberTextFormatter()],
-                          onSaved: (val) => _creditPercents =
-                              double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
-                          validator: (val) => _removeWhiteSpaces(val).isEmpty
-                              ? "Обозначте процентную ставку"
-                              : null,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          onFieldSubmitted: (v) => FocusScope.of(context)
-                              .requestFocus(_plannedPaymentFocusNode),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            filled: true,
-                            icon: Icon(Icons.account_balance_wallet),
-                            hintText: "Обозначте планируемую сумму платежа",
-                            labelText: "Планируемый платеж",
-                          ),
-                          focusNode: _plannedPaymentFocusNode,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            WhitelistingTextInputFormatter.digitsOnly,
-                            _NumberDigitTextFormatter()
-                          ],
-                          onSaved: (val) => _planned_payment =
-                              double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
-                          onFieldSubmitted: (v) => _handleCalculate(),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Center(
-                          child: RaisedButton(
-                            child: const Text("РАССЧИТАТЬ"),
-                            onPressed: () {
-                              _handleCalculate();
-                            },
+                            inputFormatters: [
+                              WhitelistingTextInputFormatter.digitsOnly,
+                              _NumberDigitTextFormatter()
+                            ],
+                            onSaved: (val) => _planned_payment =
+                                double.tryParse(_removeWhiteSpaces(val)) ??
+                                    0.0,
+                            onFieldSubmitted: (v) => _handleCalculate(),
                           ),
                         ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        _getResultRow(
-                          creditEndTerm: widget.viewModel.creditMounthCount,
-                          totalSum: widget.viewModel.totalSum,
-                          overpayment: widget.viewModel.overPay,
+                        Switch(
+                          value: _plannedPaymentCheck,
+                          onChanged: (bool value) {
+                            setState(() {
+                              _plannedPaymentCheck = value;
+                            });
+                          },
                         )
                       ],
-                    )))));
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Center(
+                      child: RaisedButton(
+                        child: const Text("РАССЧИТАТЬ"),
+                        onPressed: () {
+                          _handleCalculate();
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    _getResultRow(
+                      creditEndTerm: widget.viewModel.creditMounthCount,
+                      totalSum: widget.viewModel.totalSum,
+                      overpayment: widget.viewModel.overPay,
+                    )
+                  ],
+                ))));
   }
 
   Widget _getResultRow(

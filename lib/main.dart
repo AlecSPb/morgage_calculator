@@ -9,6 +9,8 @@ import 'package:road_keeper_mobile/redux/app/app_reducer.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
 import 'package:road_keeper_mobile/ui/mortgage/morgage_input_screen.dart';
 
+import 'ui/home_page.dart';
+
 void main() {
   Intl.defaultLocale = 'ru';
   final store = Store<AppState>(
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
             const Locale('en', 'US'),
             const Locale('ru', 'RU'),
           ],
-          home: MortGageInputPageContainer(),
+          home: HomePage(),
         ),
       ),
     );
