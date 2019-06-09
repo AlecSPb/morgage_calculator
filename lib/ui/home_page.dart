@@ -1,10 +1,8 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:road_keeper_mobile/ui/payments_list/payments_list_screen.dart';
 
+import 'calculator/morgage_input_screen.dart';
 import 'custom_icons_icons.dart';
-import 'mortgage/morgage_input_screen.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,13 +11,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     MortGageInputPageContainer(),
-    Text(
-      'Index 1: Graphic',
-      style: optionStyle,
-    )
+    PaymentsListPageContainer()
   ];
 
   void _onItemTapped(int index) {
@@ -34,9 +30,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('MortGage calculator'),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

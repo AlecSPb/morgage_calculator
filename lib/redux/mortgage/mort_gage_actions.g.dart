@@ -17,7 +17,7 @@ class _$CalculateCreditAction extends CalculateCreditAction {
   final double estimatedPayment;
 
   factory _$CalculateCreditAction(
-          [void updates(CalculateCreditActionBuilder b)]) =>
+          [void Function(CalculateCreditActionBuilder) updates]) =>
       (new CalculateCreditActionBuilder()..update(updates)).build();
 
   _$CalculateCreditAction._(
@@ -43,7 +43,8 @@ class _$CalculateCreditAction extends CalculateCreditAction {
   }
 
   @override
-  CalculateCreditAction rebuild(void updates(CalculateCreditActionBuilder b)) =>
+  CalculateCreditAction rebuild(
+          void Function(CalculateCreditActionBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -123,7 +124,7 @@ class CalculateCreditActionBuilder
   }
 
   @override
-  void update(void updates(CalculateCreditActionBuilder b)) {
+  void update(void Function(CalculateCreditActionBuilder) updates) {
     if (updates != null) updates(this);
   }
 

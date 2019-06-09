@@ -12,7 +12,7 @@ class _$MortGageVm extends MortGageVm {
   @override
   final Function(MortGageAction) storeAction;
 
-  factory _$MortGageVm([void updates(MortGageVmBuilder b)]) =>
+  factory _$MortGageVm([void Function(MortGageVmBuilder) updates]) =>
       (new MortGageVmBuilder()..update(updates)).build();
 
   _$MortGageVm._({this.mortGageViewState, this.storeAction}) : super._() {
@@ -25,7 +25,7 @@ class _$MortGageVm extends MortGageVm {
   }
 
   @override
-  MortGageVm rebuild(void updates(MortGageVmBuilder b)) =>
+  MortGageVm rebuild(void Function(MortGageVmBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -88,7 +88,7 @@ class MortGageVmBuilder implements Builder<MortGageVm, MortGageVmBuilder> {
   }
 
   @override
-  void update(void updates(MortGageVmBuilder b)) {
+  void update(void Function(MortGageVmBuilder) updates) {
     if (updates != null) updates(this);
   }
 

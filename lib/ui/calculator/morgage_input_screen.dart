@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:road_keeper_mobile/block/motgage_calculate/mortgage_calculate_block.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
-import 'package:road_keeper_mobile/ui/mortgage/mort_gage_vm.dart';
+
+import 'mort_gage_vm.dart';
 
 class MortGageInputPageContainer extends StatelessWidget {
 

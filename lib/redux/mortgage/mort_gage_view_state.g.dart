@@ -16,7 +16,8 @@ class _$MortGageViewState extends MortGageViewState {
   @override
   final double overPay;
 
-  factory _$MortGageViewState([void updates(MortGageViewStateBuilder b)]) =>
+  factory _$MortGageViewState(
+          [void Function(MortGageViewStateBuilder) updates]) =>
       (new MortGageViewStateBuilder()..update(updates)).build();
 
   _$MortGageViewState._(
@@ -37,7 +38,7 @@ class _$MortGageViewState extends MortGageViewState {
   }
 
   @override
-  MortGageViewState rebuild(void updates(MortGageViewStateBuilder b)) =>
+  MortGageViewState rebuild(void Function(MortGageViewStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -117,7 +118,7 @@ class MortGageViewStateBuilder
   }
 
   @override
-  void update(void updates(MortGageViewStateBuilder b)) {
+  void update(void Function(MortGageViewStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 

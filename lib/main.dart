@@ -7,7 +7,6 @@ import 'package:road_keeper_mobile/block/motgage_calculate/mortgage_calculate_bl
 import 'package:road_keeper_mobile/redux/app/app_middleware.dart';
 import 'package:road_keeper_mobile/redux/app/app_reducer.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
-import 'package:road_keeper_mobile/ui/mortgage/morgage_input_screen.dart';
 
 import 'ui/home_page.dart';
 
@@ -25,7 +24,9 @@ void main() {
 class MyApp extends StatelessWidget {
   final Store<AppState> store;
   final MortGageCalculateBlock mortGageBlock;
+
   MyApp(this.store, this.mortGageBlock);
+
   @override
   Widget build(BuildContext context) {
     return StoreProvider(
