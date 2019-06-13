@@ -7,7 +7,6 @@ import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 import 'mort_gage_vm.dart';
 
 class MortGageInputPageContainer extends StatelessWidget {
-
   const MortGageInputPageContainer({Key key}) : super(key: key);
 
   @override
@@ -30,7 +29,7 @@ class MortGageInputPage extends StatefulWidget {
   _MortGageInputPageState createState() => _MortGageInputPageState();
 }
 
-class _MortGageInputPageState extends State<MortGageInputPage> {
+class _MortGageInputPageState extends State<MortGageInputPage>{
   static final _formKey = GlobalKey<FormState>();
   int _creditTerm;
   double _creditSum, _creditPercents, _planned_payment;
@@ -40,6 +39,11 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
       _creditTermFocusNode,
       _creditPercentsFocusNode,
       _plannedPaymentFocusNode;
+
+  TextEditingController _creditSumTextController = TextEditingController();
+  TextEditingController _creditTermTextController = TextEditingController();
+  TextEditingController _creditPercentsTextController = TextEditingController();
+  TextEditingController _plannedPaymentTextController = TextEditingController();
 
   String _removeWhiteSpaces(String value) {
     return value.replaceAll(" ", "");
@@ -99,31 +103,34 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                           : null,
                       onFieldSubmitted: (v) => FocusScope.of(context)
                           .requestFocus(_creditTermFocusNode),
+                      controller: _creditSumTextController,
                     ),
                     SizedBox(
                       height: 16,
                     ),
                     TextFormField(
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          filled: true,
-                          icon: Icon(Icons.timer),
-                          hintText: "Обозначте срок кредита",
-                          labelText: "Срок кредита, мес",
-                        ),
-                        focusNode: _creditTermFocusNode,
-                        inputFormatters: [
-                          WhitelistingTextInputFormatter.digitsOnly
-                        ],
-                        keyboardType: TextInputType.number,
-                        onSaved: (val) => _creditTerm =
-                            int.tryParse(_removeWhiteSpaces(val)) ?? 0,
-                        validator: (val) => _removeWhiteSpaces(val).isEmpty
-                            ? "Обозначте срок кредита"
-                            : null,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (v) => FocusScope.of(context)
-                            .requestFocus(_creditPercentsFocusNode)),
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        filled: true,
+                        icon: Icon(Icons.timer),
+                        hintText: "Обозначте срок кредита",
+                        labelText: "Срок кредита, мес",
+                      ),
+                      focusNode: _creditTermFocusNode,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
+                      keyboardType: TextInputType.number,
+                      onSaved: (val) => _creditTerm =
+                          int.tryParse(_removeWhiteSpaces(val)) ?? 0,
+                      validator: (val) => _removeWhiteSpaces(val).isEmpty
+                          ? "Обозначте срок кредита"
+                          : null,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (v) => FocusScope.of(context)
+                          .requestFocus(_creditPercentsFocusNode),
+                      controller: _creditTermTextController,
+                    ),
                     SizedBox(
                       height: 16,
                     ),
@@ -146,6 +153,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (v) => FocusScope.of(context)
                           .requestFocus(_plannedPaymentFocusNode),
+                      controller: _creditPercentsTextController,
                     ),
                     SizedBox(
                       height: 16,
@@ -158,8 +166,7 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                               border: UnderlineInputBorder(),
                               filled: true,
                               icon: Icon(Icons.account_balance_wallet),
-                              hintText:
-                              "Обозначте планируемую сумму платежа",
+                              hintText: "Обозначте планируемую сумму платежа",
                               labelText: "Планируемый платеж",
                             ),
                             focusNode: _plannedPaymentFocusNode,
@@ -169,9 +176,9 @@ class _MortGageInputPageState extends State<MortGageInputPage> {
                               _NumberDigitTextFormatter()
                             ],
                             onSaved: (val) => _planned_payment =
-                                double.tryParse(_removeWhiteSpaces(val)) ??
-                                    0.0,
+                                double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
                             onFieldSubmitted: (v) => _handleCalculate(),
+                            controller: _plannedPaymentTextController,
                           ),
                         ),
                         Switch(

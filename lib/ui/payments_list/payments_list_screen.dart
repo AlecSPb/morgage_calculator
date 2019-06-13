@@ -3,6 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_calc_out_row.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
 import 'package:road_keeper_mobile/ui/payments_list/payments_list_vm.dart';
+import 'package:road_keeper_mobile/utils/format_utils.dart';
 
 class PaymentsListPageContainer extends StatelessWidget {
   const PaymentsListPageContainer({Key key}) : super(key: key);
@@ -26,22 +27,94 @@ class _PaymentsListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      top: false,
-      bottom: false,
-      child: ListView.builder(
-          itemCount: _vm.paymentsList.length,
-          itemBuilder: _rowBuilder
-      ),
-    );
+        top: false,
+        bottom: false,
+        child: ListView.separated(
+          separatorBuilder: (context, index) => Divider(),
+          itemBuilder: _rowBuilder,
+          itemCount: (_vm.paymentsList.length + 1),
+        ));
   }
 
   Widget _rowBuilder(BuildContext context, int index) {
-    var row = _vm.paymentsList[index];
+    var row = _vm.paymentsList[index + 1];
     var rowKey = ValueKey<MortGageCalcOutRow>(row);
-    return ListTile(
+    return CreditRowTile(key: rowKey, row: row, index: index);
+    /* return ListTile(
       key: rowKey,
       title: Text(index.toString()),
       subtitle: Text(row.creditResidual.toString()),
+    );*/
+  }
+}
+
+class CreditRowTile extends StatelessWidget {
+  final MortGageCalcOutRow row;
+  final int index;
+
+  const CreditRowTile({Key key, this.row, this.index})
+      : assert(row != null),
+        assert(index != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+      child: (index == 0) ? _getTableHeaderRow() : _getTableRow(),
+    );
+  }
+
+  Widget _getTableHeaderRow() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(alignment: Alignment.center, height: 64, child: Text("№")),
+        Container(
+            alignment: Alignment.center, height: 64, child: Text("Осн. долг")),
+        Container(
+            alignment: Alignment.center, height: 64, child: Text("Проценты")),
+        Container(
+            alignment: Alignment.center, height: 64, child: Text("Остаток")),
+        Container(
+            alignment: Alignment.center, height: 64, child: Text("Платеж")),
+      ],
+    );
+  }
+
+  Widget _getTableRow() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+            alignment: Alignment.centerLeft,
+            height: 64,
+            child: Text(index.toString())),
+        Container(
+            alignment: Alignment.center,
+            height: 64,
+            child: Text(getBigDecimalString(row.mainPayment))),
+        Container(
+            alignment: Alignment.center,
+            height: 64,
+            child: Text(getBigDecimalString(row.percentPayment))),
+        Container(
+            alignment: Alignment.center,
+            height: 64,
+            child: Text(getBigDecimalString(row.creditResidual))),
+        Container(
+            alignment: Alignment.center,
+            height: 64,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(getBigDecimalString(row.totalPayment)),
+                Text(getBigDecimalString(row.additionalPayment))
+              ],
+            )),
+      ],
     );
   }
 }
