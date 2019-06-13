@@ -26,7 +26,9 @@ class MortGageInputPage extends StatelessWidget {
               converter: MortGageInputVm.fromStore,
               builder: (context, vm) => _MortGageInputWidget(vm),
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             StoreConnector<AppState, MortGageOutPutVm>(
                 distinct: true,
                 converter: MortGageOutPutVm.fromStore,
@@ -47,6 +49,7 @@ class _MortGageInputWidget extends StatefulWidget {
 
 class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
   static final _formKey = GlobalKey<FormState>();
+  MortGageType _mortGageType;
   int _creditTerm;
   double _creditSum, _creditPercents, _planned_payment;
   bool _plannedPaymentCheck = false;
@@ -80,6 +83,7 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
         TextEditingController(text: viewState.creditRate);
     _plannedPaymentTextController =
         TextEditingController(text: viewState.plannedPayment);
+    _mortGageType = viewState.mortGageType;
     super.initState();
   }
 
@@ -100,7 +104,11 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             SizedBox(
-              height: 24.0,
+              height: 16.0,
+            ),
+            getMortGageTypeSelector(),
+            SizedBox(
+              height: 16.0,
             ),
             TextFormField(
               decoration: const InputDecoration(
@@ -225,12 +233,47 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
         ));
   }
 
+  Widget getMortGageTypeSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Text("Тип кредита: "),
+        SizedBox(
+          height: 8.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            ChoiceChip(
+              label: Text("Дифференцированный"),
+              selected: _mortGageType == MortGageType.differentiated,
+              onSelected: (bool selected) {
+                setState(() {
+                  _mortGageType = selected ? MortGageType.differentiated : null;
+                });
+              },
+            ),
+            ChoiceChip(
+              label: Text("Аннуитетный"),
+              selected: _mortGageType == MortGageType.annuity,
+              onSelected: (bool selected) {
+                setState(() {
+                  _mortGageType = selected ? MortGageType.annuity : null;
+                });
+              },
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
   void _saveInputState() {
     var inputState = MortGageInputViewState((b) => b
       ..plannedPayment = _plannedPaymentTextController.text
       ..creditTerm = _creditTermTextController.text
       ..creditSum = _creditSumTextController.text
-      ..mortGageType = MortGageType.differentiated
+      ..mortGageType = _mortGageType
       ..creditRate = _creditPercentsTextController.text);
     widget.viewModel.storeAction(SaveInputDataAction(inputState));
   }

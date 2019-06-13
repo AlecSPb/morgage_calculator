@@ -44,10 +44,6 @@ class _$MortGageInputViewState extends MortGageInputViewState {
       throw new BuiltValueNullFieldError(
           'MortGageInputViewState', 'plannedPayment');
     }
-    if (mortGageType == null) {
-      throw new BuiltValueNullFieldError(
-          'MortGageInputViewState', 'mortGageType');
-    }
   }
 
   @override

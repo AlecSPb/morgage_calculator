@@ -13,6 +13,7 @@ abstract class MortGageInputViewState
 
   String get plannedPayment;
 
+  @nullable
   MortGageType get mortGageType;
 
   MortGageInputViewState._();
