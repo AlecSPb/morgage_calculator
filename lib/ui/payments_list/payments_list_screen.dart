@@ -29,11 +29,17 @@ class _PaymentsListPage extends StatelessWidget {
     return SafeArea(
         top: false,
         bottom: false,
-        child: ListView.separated(
-          separatorBuilder: (context, index) => Divider(),
-          itemBuilder: _rowBuilder,
-          itemCount: (_vm.paymentsList.length + 1),
-        ));
+        child: _getContentWidget());
+  }
+
+  Widget _getContentWidget() {
+    return (_vm.paymentsList.length == 0)
+        ? Center(child: Text("Расчет не выполнен!"))
+        : ListView.separated(
+            separatorBuilder: (context, index) => Divider(),
+            itemBuilder: _rowBuilder,
+            itemCount: (_vm.paymentsList.length + 1),
+          );
   }
 
   Widget _rowBuilder(BuildContext context, int index) {
