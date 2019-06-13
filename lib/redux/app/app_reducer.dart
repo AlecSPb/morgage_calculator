@@ -9,7 +9,9 @@ AppState appReducer(AppState state, dynamic action) {
     ..isLoading = _loadingReducer(b.isLoading, action)
     ..domainEventException = _exceptionReducers(b.domainEventException, action)
     ..mortGageViewState
-        .replace(mortGageReducer(state.mortGageViewState, action)));
+        .replace(mortGageReducer(state.mortGageViewState, action))
+    ..mortGageInputViewState
+        .replace(mortGageInputReducer(state.mortGageInputViewState, action)));
 }
 
 final _loadingReducer = combineReducers<bool>([
@@ -18,6 +20,7 @@ final _loadingReducer = combineReducers<bool>([
 ]);
 
 bool _startLoad(bool state, action) => true;
+
 bool _endLoad(bool state, action) => false;
 
 final _exceptionReducers = combineReducers<Event<Exception>>([

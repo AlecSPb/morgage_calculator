@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'mort_gage_view_state.dart';
+part of 'mort_gage_result_view_state.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
@@ -16,8 +16,7 @@ class _$MortGageViewState extends MortGageViewState {
   @override
   final double overPay;
 
-  factory _$MortGageViewState(
-          [void Function(MortGageViewStateBuilder) updates]) =>
+  factory _$MortGageViewState([void updates(MortGageViewStateBuilder b)]) =>
       (new MortGageViewStateBuilder()..update(updates)).build();
 
   _$MortGageViewState._(
@@ -38,7 +37,7 @@ class _$MortGageViewState extends MortGageViewState {
   }
 
   @override
-  MortGageViewState rebuild(void Function(MortGageViewStateBuilder) updates) =>
+  MortGageViewState rebuild(void updates(MortGageViewStateBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -118,7 +117,7 @@ class MortGageViewStateBuilder
   }
 
   @override
-  void update(void Function(MortGageViewStateBuilder) updates) {
+  void update(void updates(MortGageViewStateBuilder b)) {
     if (updates != null) updates(this);
   }
 

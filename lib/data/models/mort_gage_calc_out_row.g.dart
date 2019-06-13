@@ -18,8 +18,7 @@ class _$MortGageCalcOutRow extends MortGageCalcOutRow {
   @override
   final double additionalPayment;
 
-  factory _$MortGageCalcOutRow(
-          [void Function(MortGageCalcOutRowBuilder) updates]) =>
+  factory _$MortGageCalcOutRow([void updates(MortGageCalcOutRowBuilder b)]) =>
       (new MortGageCalcOutRowBuilder()..update(updates)).build();
 
   _$MortGageCalcOutRow._(
@@ -50,8 +49,7 @@ class _$MortGageCalcOutRow extends MortGageCalcOutRow {
   }
 
   @override
-  MortGageCalcOutRow rebuild(
-          void Function(MortGageCalcOutRowBuilder) updates) =>
+  MortGageCalcOutRow rebuild(void updates(MortGageCalcOutRowBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -141,7 +139,7 @@ class MortGageCalcOutRowBuilder
   }
 
   @override
-  void update(void Function(MortGageCalcOutRowBuilder) updates) {
+  void update(void updates(MortGageCalcOutRowBuilder b)) {
     if (updates != null) updates(this);
   }
 

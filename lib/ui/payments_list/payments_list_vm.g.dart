@@ -10,7 +10,7 @@ class _$PaymentsListVm extends PaymentsListVm {
   @override
   final BuiltList<MortGageCalcOutRow> paymentsList;
 
-  factory _$PaymentsListVm([void Function(PaymentsListVmBuilder) updates]) =>
+  factory _$PaymentsListVm([void updates(PaymentsListVmBuilder b)]) =>
       (new PaymentsListVmBuilder()..update(updates)).build();
 
   _$PaymentsListVm._({this.paymentsList}) : super._() {
@@ -20,7 +20,7 @@ class _$PaymentsListVm extends PaymentsListVm {
   }
 
   @override
-  PaymentsListVm rebuild(void Function(PaymentsListVmBuilder) updates) =>
+  PaymentsListVm rebuild(void updates(PaymentsListVmBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -75,7 +75,7 @@ class PaymentsListVmBuilder
   }
 
   @override
-  void update(void Function(PaymentsListVmBuilder) updates) {
+  void update(void updates(PaymentsListVmBuilder b)) {
     if (updates != null) updates(this);
   }
 

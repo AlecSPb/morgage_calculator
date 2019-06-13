@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_calc_out_row.dart';
-import 'package:road_keeper_mobile/redux/mortgage/mort_gage_view_state.dart';
+import 'package:road_keeper_mobile/redux/mortgage/mort_gage_result_view_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 import 'package:rxdart/rxdart.dart';
 

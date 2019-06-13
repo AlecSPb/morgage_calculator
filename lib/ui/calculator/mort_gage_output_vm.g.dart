@@ -1,41 +1,43 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'mort_gage_vm.dart';
+part of 'mort_gage_output_vm.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$MortGageVm extends MortGageVm {
+class _$MortGageOutPutVm extends MortGageOutPutVm {
   @override
   final MortGageViewState mortGageViewState;
   @override
   final Function(MortGageAction) storeAction;
 
-  factory _$MortGageVm([void Function(MortGageVmBuilder) updates]) =>
-      (new MortGageVmBuilder()..update(updates)).build();
+  factory _$MortGageOutPutVm([void updates(MortGageOutPutVmBuilder b)]) =>
+      (new MortGageOutPutVmBuilder()..update(updates)).build();
 
-  _$MortGageVm._({this.mortGageViewState, this.storeAction}) : super._() {
+  _$MortGageOutPutVm._({this.mortGageViewState, this.storeAction}) : super._() {
     if (mortGageViewState == null) {
-      throw new BuiltValueNullFieldError('MortGageVm', 'mortGageViewState');
+      throw new BuiltValueNullFieldError(
+          'MortGageOutPutVm', 'mortGageViewState');
     }
     if (storeAction == null) {
-      throw new BuiltValueNullFieldError('MortGageVm', 'storeAction');
+      throw new BuiltValueNullFieldError('MortGageOutPutVm', 'storeAction');
     }
   }
 
   @override
-  MortGageVm rebuild(void Function(MortGageVmBuilder) updates) =>
+  MortGageOutPutVm rebuild(void updates(MortGageOutPutVmBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  MortGageVmBuilder toBuilder() => new MortGageVmBuilder()..replace(this);
+  MortGageOutPutVmBuilder toBuilder() =>
+      new MortGageOutPutVmBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     final _$dynamicOther = other as dynamic;
-    return other is MortGageVm &&
+    return other is MortGageOutPutVm &&
         mortGageViewState == other.mortGageViewState &&
         storeAction == _$dynamicOther.storeAction;
   }
@@ -47,15 +49,16 @@ class _$MortGageVm extends MortGageVm {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('MortGageVm')
+    return (newBuiltValueToStringHelper('MortGageOutPutVm')
           ..add('mortGageViewState', mortGageViewState)
           ..add('storeAction', storeAction))
         .toString();
   }
 }
 
-class MortGageVmBuilder implements Builder<MortGageVm, MortGageVmBuilder> {
-  _$MortGageVm _$v;
+class MortGageOutPutVmBuilder
+    implements Builder<MortGageOutPutVm, MortGageOutPutVmBuilder> {
+  _$MortGageOutPutVm _$v;
 
   MortGageViewStateBuilder _mortGageViewState;
   MortGageViewStateBuilder get mortGageViewState =>
@@ -68,9 +71,9 @@ class MortGageVmBuilder implements Builder<MortGageVm, MortGageVmBuilder> {
   set storeAction(Function(MortGageAction) storeAction) =>
       _$this._storeAction = storeAction;
 
-  MortGageVmBuilder();
+  MortGageOutPutVmBuilder();
 
-  MortGageVmBuilder get _$this {
+  MortGageOutPutVmBuilder get _$this {
     if (_$v != null) {
       _mortGageViewState = _$v.mortGageViewState?.toBuilder();
       _storeAction = _$v.storeAction;
@@ -80,24 +83,24 @@ class MortGageVmBuilder implements Builder<MortGageVm, MortGageVmBuilder> {
   }
 
   @override
-  void replace(MortGageVm other) {
+  void replace(MortGageOutPutVm other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$MortGageVm;
+    _$v = other as _$MortGageOutPutVm;
   }
 
   @override
-  void update(void Function(MortGageVmBuilder) updates) {
+  void update(void updates(MortGageOutPutVmBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$MortGageVm build() {
-    _$MortGageVm _$result;
+  _$MortGageOutPutVm build() {
+    _$MortGageOutPutVm _$result;
     try {
       _$result = _$v ??
-          new _$MortGageVm._(
+          new _$MortGageOutPutVm._(
               mortGageViewState: mortGageViewState.build(),
               storeAction: storeAction);
     } catch (_) {
@@ -107,7 +110,7 @@ class MortGageVmBuilder implements Builder<MortGageVm, MortGageVmBuilder> {
         mortGageViewState.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'MortGageVm', _$failedField, e.toString());
+            'MortGageOutPutVm', _$failedField, e.toString());
       }
       rethrow;
     }

@@ -4,13 +4,17 @@ import 'package:built_collection/built_collection.dart';
 import 'package:redux/redux.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_calc_out_row.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
-import 'package:road_keeper_mobile/redux/mortgage/mort_gage_view_state.dart';
+import 'package:road_keeper_mobile/redux/mortgage/mort_gage_result_view_state.dart';
+import 'package:road_keeper_mobile/redux/mortgage/mort_gate_input_view_state.dart';
 
 Reducer<MortGageViewState> mortGageReducer = combineReducers(
     [TypedReducer<MortGageViewState, CalculateCreditAction>(_calculate)]);
 
+Reducer<MortGageInputViewState> mortGageInputReducer = combineReducers(
+    [TypedReducer<MortGageInputViewState, SaveInputDataAction>(_saveInput)]);
 
-MortGageViewState _calculate(MortGageViewState state, CalculateCreditAction action){
+MortGageViewState _calculate(
+    MortGageViewState state, CalculateCreditAction action) {
   var payments = _calculateCreditPaymentsList(action);
   var totalPay = _calculateTotalPay(payments.toList());
   return MortGageViewState((b) => b
@@ -20,17 +24,22 @@ MortGageViewState _calculate(MortGageViewState state, CalculateCreditAction acti
     ..creditSum = action.creditSum);
 }
 
+MortGageInputViewState _saveInput(
+    MortGageInputViewState state, SaveInputDataAction action) {
+  return action.inputState;
+}
+
 BuiltList<MortGageCalcOutRow> _calculateCreditPaymentsList(
     CalculateCreditAction input) {
   var result = List<MortGageCalcOutRow>();
   var firstPayment = _calculatePayment(
       input.creditSum, input.creditPercents, input.creditTerm);
   var firstCreditPayment =
-  _calculatePercentPayment(input.creditSum, input.creditPercents);
+      _calculatePercentPayment(input.creditSum, input.creditPercents);
   var firstAdditionalPayment =
-  (((input.estimatedPayment ?? 0.0) - firstPayment) > 0)
-      ? (input.estimatedPayment - firstPayment)
-      : 0.0;
+      (((input.estimatedPayment ?? 0.0) - firstPayment) > 0)
+          ? (input.estimatedPayment - firstPayment)
+          : 0.0;
   var firstRow = MortGageCalcOutRow((b) => b
     ..creditResidual = input.creditSum
     ..percentPayment = firstCreditPayment
@@ -49,16 +58,16 @@ BuiltList<MortGageCalcOutRow> _calculateCreditPaymentsList(
     var nextCreditPayment = _calculatePayment(currentCreditResidual,
         input.creditPercents, input.creditTerm - result.length);
     var nextPercentsPayment =
-    _calculatePercentPayment(currentCreditResidual, input.creditPercents);
+        _calculatePercentPayment(currentCreditResidual, input.creditPercents);
     var nextAdditionalPayment =
         (input.estimatedPayment ?? 0) - nextCreditPayment;
     var additionalPayment = (nextAdditionalPayment > 0)
         ? ((currentCreditResidual <= nextAdditionalPayment)
-        ? (currentCreditResidual - nextCreditPayment)
-        : nextAdditionalPayment)
+            ? (currentCreditResidual - nextCreditPayment)
+            : nextAdditionalPayment)
         : 0.0;
 
-    if(currentCreditResidual == 0) break;
+    if (currentCreditResidual == 0) break;
     var nextRow = MortGageCalcOutRow((b) => b
       ..creditResidual = currentCreditResidual
       ..percentPayment = nextPercentsPayment
@@ -66,7 +75,7 @@ BuiltList<MortGageCalcOutRow> _calculateCreditPaymentsList(
       ..totalPayment = nextCreditPayment
       ..additionalPayment = additionalPayment);
     result.add(nextRow);
-    if(currentCreditResidual <= nextAdditionalPayment) break;
+    if (currentCreditResidual <= nextAdditionalPayment) break;
   }
 
   return BuiltList(result);
