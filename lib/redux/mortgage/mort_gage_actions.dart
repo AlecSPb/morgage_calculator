@@ -1,4 +1,5 @@
 import 'package:built_value/built_value.dart';
+import 'package:road_keeper_mobile/data/models/mort_gage_type.dart';
 
 import 'mort_gate_input_view_state.dart';
 
@@ -19,6 +20,9 @@ abstract class CalculateCreditAction
   int get creditTerm;
 
   double get estimatedPayment;
+
+  @nullable
+  MortGageType get mortGageType;
 
   factory CalculateCreditAction([updates(CalculateCreditActionBuilder b)]) =
       _$CalculateCreditAction;

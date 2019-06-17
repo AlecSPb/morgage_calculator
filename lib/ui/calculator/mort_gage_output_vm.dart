@@ -32,22 +32,26 @@ abstract class MortGageOutPutVm implements Built<MortGageOutPutVm, MortGageOutPu
     if (numberOfMonths == null || numberOfMonths == 0) return "_";
     var years = numberOfMonths ~/ 12;
     var months = numberOfMonths - (years * 12);
-    var result = "";
+    var monthsString = "";
     if (months == 1) {
-      result = "1 месяц";
+      monthsString = "1 месяц";
     } else if (months > 1 && months < 5) {
-      result = "$months месяца";
+      monthsString = "$months месяца";
     } else if (months > 4) {
-      result = "$months месяцев";
+      monthsString = "$months месяцев";
     }
+    var yearsString = "";
     if (years == 1) {
-      result = "1 год и " + result;
+      yearsString = "1 год";
     } else if (years > 1 && years < 5) {
-      result = "$years года и " + result;
+      yearsString = "$years года";
     } else if (years > 4) {
-      result = "$years лет и " + result;
+      yearsString = "$years лет";
     }
-    return result;
+    if(months > 0){
+      yearsString += " и ";
+    }
+    return yearsString + monthsString;
   }
 
   static MortGageOutPutVm fromStore(Store<AppState> store) {

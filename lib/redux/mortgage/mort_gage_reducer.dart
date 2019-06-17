@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:built_collection/built_collection.dart';
 import 'package:redux/redux.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_calc_out_row.dart';
+import 'package:road_keeper_mobile/data/models/mort_gage_type.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_result_view_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gate_input_view_state.dart';
@@ -15,7 +16,10 @@ Reducer<MortGageInputViewState> mortGageInputReducer = combineReducers(
 
 MortGageViewState _calculate(
     MortGageViewState state, CalculateCreditAction action) {
-  var payments = _calculateCreditPaymentsList(action);
+  var creditType = action.mortGageType ?? MortGageType.differentiated;
+  var payments = (creditType == MortGageType.differentiated)
+      ? _calculateDiffCreditPaymentsList(action)
+      : _calculateAnnCreditPaymentsList(action);
   var totalPay = _calculateTotalPay(payments.toList());
   return MortGageViewState((b) => b
     ..paymentsList.replace(payments)
@@ -29,55 +33,38 @@ MortGageInputViewState _saveInput(
   return action.inputState;
 }
 
-BuiltList<MortGageCalcOutRow> _calculateCreditPaymentsList(
+///Расчет графика дифференцированного кредита
+BuiltList<MortGageCalcOutRow> _calculateDiffCreditPaymentsList(
     CalculateCreditAction input) {
   var result = List<MortGageCalcOutRow>();
-  var firstPayment = _calculatePayment(
-      input.creditSum, input.creditPercents, input.creditTerm);
-  var firstCreditPayment =
-      _calculatePercentPayment(input.creditSum, input.creditPercents);
-  var firstAdditionalPayment =
-      (((input.estimatedPayment ?? 0.0) - firstPayment) > 0)
-          ? (input.estimatedPayment - firstPayment)
-          : 0.0;
-  var firstRow = MortGageCalcOutRow((b) => b
-    ..creditResidual = input.creditSum
-    ..percentPayment = firstCreditPayment
-    ..mainPayment = firstPayment - firstCreditPayment
-    ..totalPayment = firstPayment
-    ..additionalPayment = firstAdditionalPayment);
-
+  var monthCounter = input.creditTerm;
   var currentCreditResidual = input.creditSum;
-  result.add(firstRow);
-
-  while (currentCreditResidual > 0) {
-    var prevRow = result.last;
-    var nextCreditResidual = prevRow.creditResidual -
-        (prevRow.mainPayment + prevRow.additionalPayment);
-    currentCreditResidual = (nextCreditResidual < 0) ? 0 : nextCreditResidual;
-    var nextCreditPayment = _calculatePayment(currentCreditResidual,
-        input.creditPercents, input.creditTerm - result.length);
-    var nextPercentsPayment =
-        _calculatePercentPayment(currentCreditResidual, input.creditPercents);
-    var nextAdditionalPayment =
-        (input.estimatedPayment ?? 0) - nextCreditPayment;
-    var additionalPayment = (nextAdditionalPayment > 0)
-        ? ((currentCreditResidual <= nextAdditionalPayment)
-            ? (currentCreditResidual - nextCreditPayment)
-            : nextAdditionalPayment)
-        : 0.0;
-
-    if (currentCreditResidual == 0) break;
-    var nextRow = MortGageCalcOutRow((b) => b
-      ..creditResidual = currentCreditResidual
-      ..percentPayment = nextPercentsPayment
-      ..mainPayment = nextCreditPayment - nextPercentsPayment
-      ..totalPayment = nextCreditPayment
-      ..additionalPayment = additionalPayment);
-    result.add(nextRow);
-    if (currentCreditResidual <= nextAdditionalPayment) break;
+  var percents = input.creditPercents;
+  while (currentCreditResidual > 0 && monthCounter > 0) {
+    var paymentRow =
+        _calculateDiffPaymentRow(currentCreditResidual, percents, monthCounter);
+    result.add(paymentRow);
+    monthCounter--;
+    currentCreditResidual = paymentRow.creditResidual;
   }
 
+  return BuiltList(result);
+}
+
+///Расчет графика аннуитетного кредита
+BuiltList<MortGageCalcOutRow> _calculateAnnCreditPaymentsList(
+    CalculateCreditAction input) {
+  var result = List<MortGageCalcOutRow>();
+  var monthCounter = input.creditTerm;
+  var currentCreditResidual = input.creditSum;
+  var percents = input.creditPercents;
+  while (currentCreditResidual > 0 && monthCounter > 0) {
+    var paymentRow =
+        _calculateAnnPaymentRow(currentCreditResidual, percents, monthCounter);
+    result.add(paymentRow);
+    monthCounter--;
+    currentCreditResidual = paymentRow.creditResidual;
+  }
   return BuiltList(result);
 }
 
@@ -90,13 +77,43 @@ double _calculateTotalPay(List<MortGageCalcOutRow> pays) {
   return result;
 }
 
-double _calculatePayment(
-    double creditSum, double percents, int numberOfMonths) {
-  return creditSum *
-      ((percents * 0.01 / 12) /
-          (1 - pow(1 + (percents * 0.01 / 12), -1 * numberOfMonths)));
+
+
+MortGageCalcOutRow _calculateDiffPaymentRow(
+    double creditSum, double percents, int numberOfMonths,
+    [double plannedPayment]) {
+  //доля тела кредита
+  var creditBodyPayment = creditSum / numberOfMonths;
+  //доля процентов
+  var percentPayment = creditSum * percents /100 / 12;
+  //cуммарный платеж
+  var totalPayment = creditBodyPayment + percentPayment;
+  //долг на конец месяца
+  var creditResidual = creditSum - creditBodyPayment;
+  return MortGageCalcOutRow((b) => b
+    ..percentPayment = percentPayment
+    ..mainPayment = creditBodyPayment
+    ..totalPayment = totalPayment
+    ..additionalPayment = 0.00
+    ..creditResidual = creditResidual);
 }
 
-double _calculatePercentPayment(creditSum, creditPercents) {
-  return creditSum * creditPercents * 0.01 / 12;
+MortGageCalcOutRow _calculateAnnPaymentRow(
+    double creditSum, double percents, int numberOfMonths) {
+  //ежемесячная процентная ставка
+  var i = percents * 0.01 / 12;
+  //суммарный платеж
+  var totalPayment = creditSum * (i + (i / (pow(1 + i, numberOfMonths) - 1)));
+  //доля процентов
+  var percentPayment = creditSum * i;
+  //доля тела кредита
+  var creditBodyPayment = totalPayment - percentPayment;
+  //долг на конец месяца
+  var creditResidual = creditSum - creditBodyPayment;
+  return MortGageCalcOutRow((b) => b
+    ..percentPayment = percentPayment
+    ..mainPayment = creditBodyPayment
+    ..totalPayment = totalPayment
+    ..additionalPayment = 0.00
+    ..creditResidual = creditResidual);
 }

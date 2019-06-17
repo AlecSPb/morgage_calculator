@@ -282,6 +282,7 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       widget.viewModel.storeAction(CalculateCreditAction((b) => b
+        ..mortGageType = _mortGageType
         ..creditSum = _creditSum
         ..creditTerm = _creditTerm
         ..creditPercents = _creditPercents

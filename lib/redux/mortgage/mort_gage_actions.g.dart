@@ -15,6 +15,8 @@ class _$CalculateCreditAction extends CalculateCreditAction {
   final int creditTerm;
   @override
   final double estimatedPayment;
+  @override
+  final MortGageType mortGageType;
 
   factory _$CalculateCreditAction(
           [void updates(CalculateCreditActionBuilder b)]) =>
@@ -24,7 +26,8 @@ class _$CalculateCreditAction extends CalculateCreditAction {
       {this.creditSum,
       this.creditPercents,
       this.creditTerm,
-      this.estimatedPayment})
+      this.estimatedPayment,
+      this.mortGageType})
       : super._() {
     if (creditSum == null) {
       throw new BuiltValueNullFieldError('CalculateCreditAction', 'creditSum');
@@ -57,15 +60,18 @@ class _$CalculateCreditAction extends CalculateCreditAction {
         creditSum == other.creditSum &&
         creditPercents == other.creditPercents &&
         creditTerm == other.creditTerm &&
-        estimatedPayment == other.estimatedPayment;
+        estimatedPayment == other.estimatedPayment &&
+        mortGageType == other.mortGageType;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, creditSum.hashCode), creditPercents.hashCode),
-            creditTerm.hashCode),
-        estimatedPayment.hashCode));
+        $jc(
+            $jc($jc($jc(0, creditSum.hashCode), creditPercents.hashCode),
+                creditTerm.hashCode),
+            estimatedPayment.hashCode),
+        mortGageType.hashCode));
   }
 
   @override
@@ -74,7 +80,8 @@ class _$CalculateCreditAction extends CalculateCreditAction {
           ..add('creditSum', creditSum)
           ..add('creditPercents', creditPercents)
           ..add('creditTerm', creditTerm)
-          ..add('estimatedPayment', estimatedPayment))
+          ..add('estimatedPayment', estimatedPayment)
+          ..add('mortGageType', mortGageType))
         .toString();
   }
 }
@@ -101,6 +108,11 @@ class CalculateCreditActionBuilder
   set estimatedPayment(double estimatedPayment) =>
       _$this._estimatedPayment = estimatedPayment;
 
+  MortGageType _mortGageType;
+  MortGageType get mortGageType => _$this._mortGageType;
+  set mortGageType(MortGageType mortGageType) =>
+      _$this._mortGageType = mortGageType;
+
   CalculateCreditActionBuilder();
 
   CalculateCreditActionBuilder get _$this {
@@ -109,6 +121,7 @@ class CalculateCreditActionBuilder
       _creditPercents = _$v.creditPercents;
       _creditTerm = _$v.creditTerm;
       _estimatedPayment = _$v.estimatedPayment;
+      _mortGageType = _$v.mortGageType;
       _$v = null;
     }
     return this;
@@ -134,7 +147,8 @@ class CalculateCreditActionBuilder
             creditSum: creditSum,
             creditPercents: creditPercents,
             creditTerm: creditTerm,
-            estimatedPayment: estimatedPayment);
+            estimatedPayment: estimatedPayment,
+            mortGageType: mortGageType);
     replace(_$result);
     return _$result;
   }

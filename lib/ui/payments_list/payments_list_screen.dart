@@ -26,10 +26,7 @@ class _PaymentsListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        top: false,
-        bottom: false,
-        child: _getContentWidget());
+    return SafeArea(top: false, bottom: false, child: _getContentWidget());
   }
 
   Widget _getContentWidget() {
@@ -43,7 +40,8 @@ class _PaymentsListPage extends StatelessWidget {
   }
 
   Widget _rowBuilder(BuildContext context, int index) {
-    var row = _vm.paymentsList[index + 1];
+    if(index == 0) return _HeaderRow();
+    var row = _vm.paymentsList[index - 1];
     var rowKey = ValueKey<MortGageCalcOutRow>(row);
     return CreditRowTile(key: rowKey, row: row, index: index);
     /* return ListTile(
@@ -54,21 +52,12 @@ class _PaymentsListPage extends StatelessWidget {
   }
 }
 
-class CreditRowTile extends StatelessWidget {
-  final MortGageCalcOutRow row;
-  final int index;
-
-  const CreditRowTile({Key key, this.row, this.index})
-      : assert(row != null),
-        assert(index != null),
-        super(key: key);
-
+class _HeaderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-      child: (index == 0) ? _getTableHeaderRow() : _getTableRow(),
-    );
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+        child: _getTableHeaderRow());
   }
 
   Widget _getTableHeaderRow() {
@@ -86,6 +75,24 @@ class CreditRowTile extends StatelessWidget {
         Container(
             alignment: Alignment.center, height: 64, child: Text("Платеж")),
       ],
+    );
+  }
+}
+
+class CreditRowTile extends StatelessWidget {
+  final MortGageCalcOutRow row;
+  final int index;
+
+  const CreditRowTile({Key key, this.row, this.index})
+      : assert(row != null),
+        assert(index != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+      child: _getTableRow(),
     );
   }
 
