@@ -19,6 +19,7 @@ abstract class CalculateCreditAction
 
   int get creditTerm;
 
+  @nullable
   double get estimatedPayment;
 
   @nullable

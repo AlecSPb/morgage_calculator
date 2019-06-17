@@ -39,10 +39,6 @@ class _$CalculateCreditAction extends CalculateCreditAction {
     if (creditTerm == null) {
       throw new BuiltValueNullFieldError('CalculateCreditAction', 'creditTerm');
     }
-    if (estimatedPayment == null) {
-      throw new BuiltValueNullFieldError(
-          'CalculateCreditAction', 'estimatedPayment');
-    }
   }
 
   @override

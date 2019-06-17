@@ -7,6 +7,7 @@ import 'package:road_keeper_mobile/data/models/mort_gage_type.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_result_view_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gate_input_view_state.dart';
+import 'package:road_keeper_mobile/utils/format_utils.dart';
 
 Reducer<MortGageViewState> mortGageReducer = combineReducers(
     [TypedReducer<MortGageViewState, CalculateCreditAction>(_calculate)]);
@@ -21,11 +22,31 @@ MortGageViewState _calculate(
       ? _calculateDiffCreditPaymentsList(action)
       : _calculateAnnCreditPaymentsList(action);
   var totalPay = _calculateTotalPay(payments.toList());
+  var calculatedCreditPaymentString = (action.estimatedPayment != null)
+      ? null
+      : getcalculatedCreditPaymentString(creditType, payments.toList());
   return MortGageViewState((b) => b
     ..paymentsList.replace(payments)
     ..totalSum = totalPay
     ..overPay = totalPay - action.creditSum
-    ..creditSum = action.creditSum);
+    ..creditSum = action.creditSum
+    ..calculatedCreditPayment = calculatedCreditPaymentString);
+}
+
+String getcalculatedCreditPaymentString(
+    MortGageType mortGageType, List<MortGageCalcOutRow> payments) {
+  String result;
+  if (mortGageType == MortGageType.annuity) {
+    if (payments.length == 0) return null;
+    result = getBigDecimalString(payments.first?.totalPayment);
+  } else {
+    if (payments.length == 0) return null;
+    result = getBigDecimalString(payments.first?.totalPayment);
+    if (payments.length == 1) return result;
+    result += "...";
+    result += getBigDecimalString(payments.last.totalPayment);
+  }
+  return result;
 }
 
 MortGageInputViewState _saveInput(
@@ -77,15 +98,13 @@ double _calculateTotalPay(List<MortGageCalcOutRow> pays) {
   return result;
 }
 
-
-
 MortGageCalcOutRow _calculateDiffPaymentRow(
     double creditSum, double percents, int numberOfMonths,
     [double plannedPayment]) {
   //доля тела кредита
   var creditBodyPayment = creditSum / numberOfMonths;
   //доля процентов
-  var percentPayment = creditSum * percents /100 / 12;
+  var percentPayment = creditSum * percents / 100 / 12;
   //cуммарный платеж
   var totalPayment = creditBodyPayment + percentPayment;
   //долг на конец месяца

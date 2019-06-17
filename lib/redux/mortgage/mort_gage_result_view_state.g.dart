@@ -15,12 +15,18 @@ class _$MortGageViewState extends MortGageViewState {
   final double totalSum;
   @override
   final double overPay;
+  @override
+  final String calculatedCreditPayment;
 
   factory _$MortGageViewState([void updates(MortGageViewStateBuilder b)]) =>
       (new MortGageViewStateBuilder()..update(updates)).build();
 
   _$MortGageViewState._(
-      {this.paymentsList, this.creditSum, this.totalSum, this.overPay})
+      {this.paymentsList,
+      this.creditSum,
+      this.totalSum,
+      this.overPay,
+      this.calculatedCreditPayment})
       : super._() {
     if (paymentsList == null) {
       throw new BuiltValueNullFieldError('MortGageViewState', 'paymentsList');
@@ -51,15 +57,18 @@ class _$MortGageViewState extends MortGageViewState {
         paymentsList == other.paymentsList &&
         creditSum == other.creditSum &&
         totalSum == other.totalSum &&
-        overPay == other.overPay;
+        overPay == other.overPay &&
+        calculatedCreditPayment == other.calculatedCreditPayment;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, paymentsList.hashCode), creditSum.hashCode),
-            totalSum.hashCode),
-        overPay.hashCode));
+        $jc(
+            $jc($jc($jc(0, paymentsList.hashCode), creditSum.hashCode),
+                totalSum.hashCode),
+            overPay.hashCode),
+        calculatedCreditPayment.hashCode));
   }
 
   @override
@@ -68,7 +77,8 @@ class _$MortGageViewState extends MortGageViewState {
           ..add('paymentsList', paymentsList)
           ..add('creditSum', creditSum)
           ..add('totalSum', totalSum)
-          ..add('overPay', overPay))
+          ..add('overPay', overPay)
+          ..add('calculatedCreditPayment', calculatedCreditPayment))
         .toString();
   }
 }
@@ -95,6 +105,11 @@ class MortGageViewStateBuilder
   double get overPay => _$this._overPay;
   set overPay(double overPay) => _$this._overPay = overPay;
 
+  String _calculatedCreditPayment;
+  String get calculatedCreditPayment => _$this._calculatedCreditPayment;
+  set calculatedCreditPayment(String calculatedCreditPayment) =>
+      _$this._calculatedCreditPayment = calculatedCreditPayment;
+
   MortGageViewStateBuilder();
 
   MortGageViewStateBuilder get _$this {
@@ -103,6 +118,7 @@ class MortGageViewStateBuilder
       _creditSum = _$v.creditSum;
       _totalSum = _$v.totalSum;
       _overPay = _$v.overPay;
+      _calculatedCreditPayment = _$v.calculatedCreditPayment;
       _$v = null;
     }
     return this;
@@ -130,7 +146,8 @@ class MortGageViewStateBuilder
               paymentsList: paymentsList.build(),
               creditSum: creditSum,
               totalSum: totalSum,
-              overPay: overPay);
+              overPay: overPay,
+              calculatedCreditPayment: calculatedCreditPayment);
     } catch (_) {
       String _$failedField;
       try {

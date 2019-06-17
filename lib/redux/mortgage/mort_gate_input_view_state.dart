@@ -16,6 +16,8 @@ abstract class MortGageInputViewState
   @nullable
   MortGageType get mortGageType;
 
+  bool get plannedPaymentCheck;
+
   MortGageInputViewState._();
 
   factory MortGageInputViewState([updates(MortGageInputViewStateBuilder b)]) =

@@ -12,6 +12,15 @@ abstract class MortGageViewState
   double get creditSum;
   double get totalSum;
   double get overPay;
+  ///расчетный ежемесячный взнос
+  ///если при расчете был задан запланированный платеж
+  ///равен [null].
+  ///При расчете аннуитетного кредита - double
+  ///При расчете дифференцированного кредита - строка вида
+  ///[в начале периода:...
+  ///[в конце периода:...]
+  @nullable
+  String get calculatedCreditPayment;
 
   factory MortGageViewState([updates(MortGageViewStateBuilder b)]) =
       _$MortGageViewState;

@@ -33,6 +33,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
       ..creditSum = ""
       ..creditTerm = ""
       ..plannedPayment = ""
+      ..plannedPaymentCheck = false
       ..mortGageType = MortGageType.differentiated).toBuilder()
     ..update(updates));
 }

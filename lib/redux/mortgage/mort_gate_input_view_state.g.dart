@@ -17,6 +17,8 @@ class _$MortGageInputViewState extends MortGageInputViewState {
   final String plannedPayment;
   @override
   final MortGageType mortGageType;
+  @override
+  final bool plannedPaymentCheck;
 
   factory _$MortGageInputViewState(
           [void updates(MortGageInputViewStateBuilder b)]) =>
@@ -27,7 +29,8 @@ class _$MortGageInputViewState extends MortGageInputViewState {
       this.creditTerm,
       this.creditRate,
       this.plannedPayment,
-      this.mortGageType})
+      this.mortGageType,
+      this.plannedPaymentCheck})
       : super._() {
     if (creditSum == null) {
       throw new BuiltValueNullFieldError('MortGageInputViewState', 'creditSum');
@@ -43,6 +46,10 @@ class _$MortGageInputViewState extends MortGageInputViewState {
     if (plannedPayment == null) {
       throw new BuiltValueNullFieldError(
           'MortGageInputViewState', 'plannedPayment');
+    }
+    if (plannedPaymentCheck == null) {
+      throw new BuiltValueNullFieldError(
+          'MortGageInputViewState', 'plannedPaymentCheck');
     }
   }
 
@@ -63,17 +70,20 @@ class _$MortGageInputViewState extends MortGageInputViewState {
         creditTerm == other.creditTerm &&
         creditRate == other.creditRate &&
         plannedPayment == other.plannedPayment &&
-        mortGageType == other.mortGageType;
+        mortGageType == other.mortGageType &&
+        plannedPaymentCheck == other.plannedPaymentCheck;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, creditSum.hashCode), creditTerm.hashCode),
-                creditRate.hashCode),
-            plannedPayment.hashCode),
-        mortGageType.hashCode));
+            $jc(
+                $jc($jc($jc(0, creditSum.hashCode), creditTerm.hashCode),
+                    creditRate.hashCode),
+                plannedPayment.hashCode),
+            mortGageType.hashCode),
+        plannedPaymentCheck.hashCode));
   }
 
   @override
@@ -83,7 +93,8 @@ class _$MortGageInputViewState extends MortGageInputViewState {
           ..add('creditTerm', creditTerm)
           ..add('creditRate', creditRate)
           ..add('plannedPayment', plannedPayment)
-          ..add('mortGageType', mortGageType))
+          ..add('mortGageType', mortGageType)
+          ..add('plannedPaymentCheck', plannedPaymentCheck))
         .toString();
   }
 }
@@ -114,6 +125,11 @@ class MortGageInputViewStateBuilder
   set mortGageType(MortGageType mortGageType) =>
       _$this._mortGageType = mortGageType;
 
+  bool _plannedPaymentCheck;
+  bool get plannedPaymentCheck => _$this._plannedPaymentCheck;
+  set plannedPaymentCheck(bool plannedPaymentCheck) =>
+      _$this._plannedPaymentCheck = plannedPaymentCheck;
+
   MortGageInputViewStateBuilder();
 
   MortGageInputViewStateBuilder get _$this {
@@ -123,6 +139,7 @@ class MortGageInputViewStateBuilder
       _creditRate = _$v.creditRate;
       _plannedPayment = _$v.plannedPayment;
       _mortGageType = _$v.mortGageType;
+      _plannedPaymentCheck = _$v.plannedPaymentCheck;
       _$v = null;
     }
     return this;
@@ -149,7 +166,8 @@ class MortGageInputViewStateBuilder
             creditTerm: creditTerm,
             creditRate: creditRate,
             plannedPayment: plannedPayment,
-            mortGageType: mortGageType);
+            mortGageType: mortGageType,
+            plannedPaymentCheck: plannedPaymentCheck);
     replace(_$result);
     return _$result;
   }
