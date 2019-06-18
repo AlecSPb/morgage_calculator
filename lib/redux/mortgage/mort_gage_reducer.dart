@@ -7,6 +7,7 @@ import 'package:road_keeper_mobile/data/models/mort_gage_type.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_result_view_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gate_input_view_state.dart';
+import 'package:road_keeper_mobile/utils/errors.dart';
 import 'package:road_keeper_mobile/utils/format_utils.dart';
 
 Reducer<MortGageViewState> mortGageReducer = combineReducers(
@@ -17,12 +18,14 @@ Reducer<MortGageInputViewState> mortGageInputReducer = combineReducers(
 
 MortGageViewState _calculate(
     MortGageViewState state, CalculateCreditAction action) {
+  //учитывать ли планируемый платеж
+  var isPlannedPaymentCounted = action.estimatedPayment != null;
   var creditType = action.mortGageType ?? MortGageType.differentiated;
   var payments = (creditType == MortGageType.differentiated)
       ? _calculateDiffCreditPaymentsList(action)
       : _calculateAnnCreditPaymentsList(action);
   var totalPay = _calculateTotalPay(payments.toList());
-  var calculatedCreditPaymentString = (action.estimatedPayment != null)
+  var calculatedCreditPaymentString = (isPlannedPaymentCounted)
       ? null
       : getcalculatedCreditPaymentString(creditType, payments.toList());
   return MortGageViewState((b) => b
@@ -61,9 +64,24 @@ BuiltList<MortGageCalcOutRow> _calculateDiffCreditPaymentsList(
   var monthCounter = input.creditTerm;
   var currentCreditResidual = input.creditSum;
   var percents = input.creditPercents;
+  var plannedPayment = input.estimatedPayment;
   while (currentCreditResidual > 0 && monthCounter > 0) {
     var paymentRow =
         _calculateDiffPaymentRow(currentCreditResidual, percents, monthCounter);
+    //учет заданного "планируемого платежа"
+    if (plannedPayment != null) {
+      //если обязательный платеж больше планируемого -> exception
+      if (paymentRow.totalPayment > plannedPayment)
+        throw SnackBarShowException(
+            "Планируемый платеж должен быть больше ${getBigDecimalString(paymentRow.totalPayment)}");
+      var additionalPayment = plannedPayment - paymentRow.totalPayment;
+      if(additionalPayment > paymentRow.creditResidual)
+        additionalPayment = paymentRow.creditResidual;
+      var creditResidual = paymentRow.creditResidual - additionalPayment;
+      paymentRow = paymentRow.rebuild((b) => b
+        ..additionalPayment = additionalPayment
+        ..creditResidual = creditResidual);
+    }
     result.add(paymentRow);
     monthCounter--;
     currentCreditResidual = paymentRow.creditResidual;
@@ -79,9 +97,24 @@ BuiltList<MortGageCalcOutRow> _calculateAnnCreditPaymentsList(
   var monthCounter = input.creditTerm;
   var currentCreditResidual = input.creditSum;
   var percents = input.creditPercents;
+  var plannedPayment = input.estimatedPayment;
   while (currentCreditResidual > 0 && monthCounter > 0) {
     var paymentRow =
         _calculateAnnPaymentRow(currentCreditResidual, percents, monthCounter);
+    //учет заданного "планируемого платежа"
+    if (plannedPayment != null) {
+      //если обязательный платеж больше планируемого -> exception
+      if (paymentRow.totalPayment > plannedPayment)
+        throw SnackBarShowException(
+            "Планируемый платеж должен быть больше ${getBigDecimalString(paymentRow.totalPayment)}");
+      var additionalPayment = plannedPayment - paymentRow.totalPayment;
+      if(additionalPayment > paymentRow.creditResidual)
+        additionalPayment = paymentRow.creditResidual;
+      var creditResidual = paymentRow.creditResidual - additionalPayment;
+      paymentRow = paymentRow.rebuild((b) => b
+        ..additionalPayment = additionalPayment
+        ..creditResidual = creditResidual);
+    }
     result.add(paymentRow);
     monthCounter--;
     currentCreditResidual = paymentRow.creditResidual;

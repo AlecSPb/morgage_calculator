@@ -1,5 +1,5 @@
 import 'package:vector_math/hash.dart';
-///Data контейнер с возможностью единоразового испльзования содержания
+///Data контейнер с возможностью единоразового использования содержания
 class Event<T> {
   final T _data;
   bool _isHadled = false;

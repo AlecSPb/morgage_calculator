@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_type.dart';
@@ -6,6 +7,8 @@ import 'package:road_keeper_mobile/redux/app/app_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gate_input_view_state.dart';
 import 'package:road_keeper_mobile/ui/calculator/mort_gage_input_vm.dart';
+import 'package:road_keeper_mobile/utils/errors.dart';
+import 'package:road_keeper_mobile/utils/event.dart';
 
 import 'mort_gage_output_vm.dart';
 
@@ -20,7 +23,21 @@ class MortGageInputPage extends StatelessWidget {
       child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child:
-          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            StoreConnector<AppState, Event<Exception>>(
+              distinct: true,
+              converter: (store) => store.state.domainEventException,
+              builder: (context, errorEvent) {
+                var error = errorEvent?.dataIfNotHandled;
+                if (error is SnackBarShowException) {
+                  WidgetsBinding.instance.addPostFrameCallback((_){
+                    Scaffold.of(context)
+                        .showSnackBar(SnackBar(content: Text(error.message)));
+                  });
+                }
+                return Container(width: 0.0,height: 0.0,);
+              },
+            ),
             StoreConnector<AppState, MortGageInputVm>(
               distinct: true,
               converter: MortGageInputVm.fromStore,
@@ -127,9 +144,8 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.next,
               onSaved: (val) =>
-              _creditSum = double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
-              validator: (val) =>
-              _removeWhiteSpaces(val).isEmpty
+                  _creditSum = double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
+              validator: (val) => _removeWhiteSpaces(val).isEmpty
                   ? "Обозначте сумму кредиту"
                   : null,
               onFieldSubmitted: (v) =>
@@ -151,9 +167,8 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
               inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
               keyboardType: TextInputType.number,
               onSaved: (val) =>
-              _creditTerm = int.tryParse(_removeWhiteSpaces(val)) ?? 0,
-              validator: (val) =>
-              _removeWhiteSpaces(val).isEmpty
+                  _creditTerm = int.tryParse(_removeWhiteSpaces(val)) ?? 0,
+              validator: (val) => _removeWhiteSpaces(val).isEmpty
                   ? "Обозначте срок кредита"
                   : null,
               textInputAction: TextInputAction.next,
@@ -174,11 +189,9 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
               ),
               focusNode: _creditPercentsFocusNode,
               inputFormatters: [_OneDotNumberTextFormatter()],
-              onSaved: (val) =>
-              _creditPercents =
+              onSaved: (val) => _creditPercents =
                   double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
-              validator: (val) =>
-              _removeWhiteSpaces(val).isEmpty
+              validator: (val) => _removeWhiteSpaces(val).isEmpty
                   ? "Обозначте процентную ставку"
                   : null,
               keyboardType: TextInputType.number,
@@ -207,8 +220,7 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
                       WhitelistingTextInputFormatter.digitsOnly,
                       _NumberDigitTextFormatter()
                     ],
-                    onSaved: (val) =>
-                    _planned_payment =
+                    onSaved: (val) => _planned_payment =
                         double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
                     validator: (val) {
                       if (!_plannedPaymentCheck) {
@@ -284,8 +296,7 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
   }
 
   void _saveInputState() {
-    var inputState = MortGageInputViewState((b) =>
-    b
+    var inputState = MortGageInputViewState((b) => b
       ..plannedPaymentCheck = _plannedPaymentCheck
       ..plannedPayment = _plannedPaymentTextController.text
       ..creditTerm = _creditTermTextController.text
@@ -299,8 +310,7 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       final plannedPayment = _plannedPaymentCheck ? _planned_payment : null;
-      widget.viewModel.storeAction(CalculateCreditAction((b) =>
-      b
+      widget.viewModel.storeAction(CalculateCreditAction((b) => b
         ..mortGageType = _mortGageType
         ..creditSum = _creditSum
         ..creditTerm = _creditTerm
@@ -352,7 +362,7 @@ class _CalculateOutputWidget extends StatelessWidget {
       ),
     ];
     var paymentWidget = _getPaymentWidget();
-    if(paymentWidget != null){
+    if (paymentWidget != null) {
       widgets.add(SizedBox(height: 16.0));
       widgets.add(paymentWidget);
       widgets.add(SizedBox(height: 16.0));
@@ -379,8 +389,8 @@ class _CalculateOutputWidget extends StatelessWidget {
 ///Format incoming numeric text to fit the format of 1 000 000
 class _NumberDigitTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
-      TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     final int newTextLength = newValue.text.length;
     int selectionIndex = newValue.selection.end;
     if (newTextLength <= 3) return newValue;
@@ -394,11 +404,7 @@ class _NumberDigitTextFormatter extends TextInputFormatter {
         selectionIndex++;
       }
     }
-    final newText = newTextBuffer
-        .toString()
-        .split('')
-        .reversed
-        .join();
+    final newText = newTextBuffer.toString().split('').reversed.join();
 
     return TextEditingValue(
         text: newText,
@@ -408,8 +414,8 @@ class _NumberDigitTextFormatter extends TextInputFormatter {
 
 class _OneDotNumberTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
-      TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     final int newTextLength = newValue.text.length;
     int selectionIndex = newValue.selection.end;
     final newTextBuffer = StringBuffer();
