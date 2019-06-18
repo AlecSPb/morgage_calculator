@@ -34,6 +34,6 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
       ..creditTerm = ""
       ..plannedPayment = ""
       ..plannedPaymentCheck = false
-      ..mortGageType = MortGageType.differentiated).toBuilder()
+      ..mortGageType = MortGageType.annuity).toBuilder()
     ..update(updates));
 }

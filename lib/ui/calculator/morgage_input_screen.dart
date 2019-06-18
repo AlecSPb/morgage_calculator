@@ -272,6 +272,15 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             ChoiceChip(
+              label: Text("Аннуитетный"),
+              selected: _mortGageType == MortGageType.annuity,
+              onSelected: (bool selected) {
+                setState(() {
+                  _mortGageType = selected ? MortGageType.annuity : null;
+                });
+              },
+            ),
+            ChoiceChip(
               label: Text("Дифференцированный"),
               selected: _mortGageType == MortGageType.differentiated,
               onSelected: (bool selected) {
@@ -280,15 +289,6 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
                 });
               },
             ),
-            ChoiceChip(
-              label: Text("Аннуитетный"),
-              selected: _mortGageType == MortGageType.annuity,
-              onSelected: (bool selected) {
-                setState(() {
-                  _mortGageType = selected ? MortGageType.annuity : null;
-                });
-              },
-            )
           ],
         ),
       ],
