@@ -12,24 +12,24 @@ class _$AppState extends AppState {
   @override
   final Event<Exception> domainEventException;
   @override
-  final MortGageViewState mortGageViewState;
+  final MortGageOutPutState mortGageOutPut;
   @override
   final MortGageInputViewState mortGageInputViewState;
 
-  factory _$AppState([void updates(AppStateBuilder b)]) =>
+  factory _$AppState([void Function(AppStateBuilder) updates]) =>
       (new AppStateBuilder()..update(updates)).build();
 
   _$AppState._(
       {this.isLoading,
       this.domainEventException,
-      this.mortGageViewState,
+      this.mortGageOutPut,
       this.mortGageInputViewState})
       : super._() {
     if (isLoading == null) {
       throw new BuiltValueNullFieldError('AppState', 'isLoading');
     }
-    if (mortGageViewState == null) {
-      throw new BuiltValueNullFieldError('AppState', 'mortGageViewState');
+    if (mortGageOutPut == null) {
+      throw new BuiltValueNullFieldError('AppState', 'mortGageOutPut');
     }
     if (mortGageInputViewState == null) {
       throw new BuiltValueNullFieldError('AppState', 'mortGageInputViewState');
@@ -37,7 +37,7 @@ class _$AppState extends AppState {
   }
 
   @override
-  AppState rebuild(void updates(AppStateBuilder b)) =>
+  AppState rebuild(void Function(AppStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -49,7 +49,7 @@ class _$AppState extends AppState {
     return other is AppState &&
         isLoading == other.isLoading &&
         domainEventException == other.domainEventException &&
-        mortGageViewState == other.mortGageViewState &&
+        mortGageOutPut == other.mortGageOutPut &&
         mortGageInputViewState == other.mortGageInputViewState;
   }
 
@@ -57,7 +57,7 @@ class _$AppState extends AppState {
   int get hashCode {
     return $jf($jc(
         $jc($jc($jc(0, isLoading.hashCode), domainEventException.hashCode),
-            mortGageViewState.hashCode),
+            mortGageOutPut.hashCode),
         mortGageInputViewState.hashCode));
   }
 
@@ -66,7 +66,7 @@ class _$AppState extends AppState {
     return (newBuiltValueToStringHelper('AppState')
           ..add('isLoading', isLoading)
           ..add('domainEventException', domainEventException)
-          ..add('mortGageViewState', mortGageViewState)
+          ..add('mortGageOutPut', mortGageOutPut)
           ..add('mortGageInputViewState', mortGageInputViewState))
         .toString();
   }
@@ -84,11 +84,11 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   set domainEventException(Event<Exception> domainEventException) =>
       _$this._domainEventException = domainEventException;
 
-  MortGageViewStateBuilder _mortGageViewState;
-  MortGageViewStateBuilder get mortGageViewState =>
-      _$this._mortGageViewState ??= new MortGageViewStateBuilder();
-  set mortGageViewState(MortGageViewStateBuilder mortGageViewState) =>
-      _$this._mortGageViewState = mortGageViewState;
+  MortGageOutPutStateBuilder _mortGageOutPut;
+  MortGageOutPutStateBuilder get mortGageOutPut =>
+      _$this._mortGageOutPut ??= new MortGageOutPutStateBuilder();
+  set mortGageOutPut(MortGageOutPutStateBuilder mortGageOutPut) =>
+      _$this._mortGageOutPut = mortGageOutPut;
 
   MortGageInputViewStateBuilder _mortGageInputViewState;
   MortGageInputViewStateBuilder get mortGageInputViewState =>
@@ -103,7 +103,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
     if (_$v != null) {
       _isLoading = _$v.isLoading;
       _domainEventException = _$v.domainEventException;
-      _mortGageViewState = _$v.mortGageViewState?.toBuilder();
+      _mortGageOutPut = _$v.mortGageOutPut?.toBuilder();
       _mortGageInputViewState = _$v.mortGageInputViewState?.toBuilder();
       _$v = null;
     }
@@ -119,7 +119,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   }
 
   @override
-  void update(void updates(AppStateBuilder b)) {
+  void update(void Function(AppStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -131,13 +131,13 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
           new _$AppState._(
               isLoading: isLoading,
               domainEventException: domainEventException,
-              mortGageViewState: mortGageViewState.build(),
+              mortGageOutPut: mortGageOutPut.build(),
               mortGageInputViewState: mortGageInputViewState.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'mortGageViewState';
-        mortGageViewState.build();
+        _$failedField = 'mortGageOutPut';
+        mortGageOutPut.build();
         _$failedField = 'mortGageInputViewState';
         mortGageInputViewState.build();
       } catch (e) {

@@ -14,7 +14,7 @@ abstract class PaymentsListVm
 
   static PaymentsListVm fromStore(Store<AppState> store){
     return PaymentsListVm((b)=> b
-        ..paymentsList = store.state.mortGageViewState.paymentsList.toBuilder()
+        ..paymentsList = store.state.mortGageOutPut.graphState.paymentsList.toBuilder()
     );
   }
 

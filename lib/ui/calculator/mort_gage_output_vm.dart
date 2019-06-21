@@ -2,26 +2,36 @@ import 'package:built_value/built_value.dart';
 import 'package:redux/redux.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
-import 'package:road_keeper_mobile/redux/mortgage/mort_gage_result_view_state.dart';
 import 'package:road_keeper_mobile/utils/format_utils.dart';
 
 part 'mort_gage_output_vm.g.dart';
 
-abstract class MortGageOutPutVm implements Built<MortGageOutPutVm, MortGageOutPutVmBuilder> {
+abstract class MortGageOutPutVm
+    implements Built<MortGageOutPutVm, MortGageOutPutVmBuilder> {
   MortGageOutPutVm._();
-
-  MortGageViewState get mortGageViewState;
 
   Function(MortGageAction) get storeAction;
 
-  String get creditSum => _getDoubleDigitString(mortGageViewState.creditSum);
+  double get creditSum;
 
-  String get totalSum => _getDoubleDigitString(mortGageViewState.totalSum);
+  double get totalSum;
 
-  String get overPay => _getDoubleDigitString(mortGageViewState.overPay);
+  double get overPay;
 
-  String get creditMounthCount =>
-      _getTimeLengthString(mortGageViewState.paymentsList.length);
+  int get creditTerm;
+
+  int get percentOverPay;
+
+  @nullable
+  String get regularCreditPayment;
+
+  String get creditSumString => _getDoubleDigitString(creditSum);
+
+  String get totalSumString => _getDoubleDigitString(totalSum);
+
+  String get overPayString => _getDoubleDigitString(overPay);
+
+  String get creditMounthCount => _getTimeLengthString(creditTerm);
 
   String _getDoubleDigitString(double number) {
     if (number == null || number == 0.0 || !(number is double)) return "_";
@@ -48,20 +58,43 @@ abstract class MortGageOutPutVm implements Built<MortGageOutPutVm, MortGageOutPu
     } else if (years > 4) {
       yearsString = "$years лет";
     }
-    if(months > 0){
+    if (months > 0) {
       yearsString += " и ";
     }
     return yearsString + monthsString;
   }
 
-  static MortGageOutPutVm fromStore(Store<AppState> store) {
+  static MortGageOutPutVm fromCalculatorOutput(Store<AppState> store) {
     var stAction = (MortGageAction action) {
       store.dispatch(action);
     };
+    var calcOutPut = store.state.mortGageOutPut.calculatorState;
     return MortGageOutPutVm((b) => b
+      ..regularCreditPayment = calcOutPut.calculatedCreditPayment
       ..storeAction = stAction
-      ..mortGageViewState = store.state.mortGageViewState.toBuilder());
+      ..creditTerm = calcOutPut.creditTerm
+      ..creditSum = calcOutPut.creditSum
+      ..totalSum = calcOutPut.totalSum
+      ..overPay = calcOutPut.overPay
+      ..percentOverPay = (!calcOutPut.percentOverPay.isNaN)
+          ? calcOutPut.percentOverPay.round()
+          : 0);
   }
 
-  factory MortGageOutPutVm([updates(MortGageOutPutVmBuilder b)]) = _$MortGageOutPutVm;
+  static MortGageOutPutVm fromGraphOutput(Store<AppState> store) {
+    var stAction = (MortGageAction action) {
+      store.dispatch(action);
+    };
+    var graphOutput = store.state.mortGageOutPut.graphState;
+    return MortGageOutPutVm((b) => b
+      ..storeAction = stAction
+      ..creditTerm = graphOutput.creditTerm
+      ..creditSum = graphOutput.creditSum
+      ..totalSum = graphOutput.totalSum
+      ..overPay = graphOutput.overPay
+      ..percentOverPay = graphOutput.percentOverPay.round());
+  }
+
+  factory MortGageOutPutVm([updates(MortGageOutPutVmBuilder b)]) =
+      _$MortGageOutPutVm;
 }

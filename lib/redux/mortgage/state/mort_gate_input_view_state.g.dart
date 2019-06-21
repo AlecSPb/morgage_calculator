@@ -21,7 +21,7 @@ class _$MortGageInputViewState extends MortGageInputViewState {
   final bool plannedPaymentCheck;
 
   factory _$MortGageInputViewState(
-          [void updates(MortGageInputViewStateBuilder b)]) =>
+          [void Function(MortGageInputViewStateBuilder) updates]) =>
       (new MortGageInputViewStateBuilder()..update(updates)).build();
 
   _$MortGageInputViewState._(
@@ -55,7 +55,7 @@ class _$MortGageInputViewState extends MortGageInputViewState {
 
   @override
   MortGageInputViewState rebuild(
-          void updates(MortGageInputViewStateBuilder b)) =>
+          void Function(MortGageInputViewStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -154,7 +154,7 @@ class MortGageInputViewStateBuilder
   }
 
   @override
-  void update(void updates(MortGageInputViewStateBuilder b)) {
+  void update(void Function(MortGageInputViewStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 

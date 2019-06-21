@@ -12,7 +12,7 @@ class _$MortGageInputVm extends MortGageInputVm {
   @override
   final Function(MortGageAction) storeAction;
 
-  factory _$MortGageInputVm([void updates(MortGageInputVmBuilder b)]) =>
+  factory _$MortGageInputVm([void Function(MortGageInputVmBuilder) updates]) =>
       (new MortGageInputVmBuilder()..update(updates)).build();
 
   _$MortGageInputVm._({this.mortGageInputViewState, this.storeAction})
@@ -27,7 +27,7 @@ class _$MortGageInputVm extends MortGageInputVm {
   }
 
   @override
-  MortGageInputVm rebuild(void updates(MortGageInputVmBuilder b)) =>
+  MortGageInputVm rebuild(void Function(MortGageInputVmBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -94,7 +94,7 @@ class MortGageInputVmBuilder
   }
 
   @override
-  void update(void updates(MortGageInputVmBuilder b)) {
+  void update(void Function(MortGageInputVmBuilder) updates) {
     if (updates != null) updates(this);
   }
 

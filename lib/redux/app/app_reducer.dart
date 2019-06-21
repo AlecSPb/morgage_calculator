@@ -11,8 +11,8 @@ AppState appReducer(AppState state, dynamic action) {
     resultState = state.rebuild((b) => b
       ..isLoading = _loadingReducer(b.isLoading, action)
       ..domainEventException = _exceptionReducers(b.domainEventException, action)
-      ..mortGageViewState
-          .replace(mortGageReducer(state.mortGageViewState, action))
+      ..mortGageOutPut
+          .replace(mortGageOutPutReducer(state.mortGageOutPut, action))
       ..mortGageInputViewState
           .replace(mortGageInputReducer(state.mortGageInputViewState, action)));
   }on ShowException catch(e){

@@ -5,7 +5,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_type.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
-import 'package:road_keeper_mobile/redux/mortgage/mort_gate_input_view_state.dart';
+import 'package:road_keeper_mobile/redux/mortgage/state/mort_gate_input_view_state.dart';
 import 'package:road_keeper_mobile/ui/calculator/mort_gage_input_vm.dart';
 import 'package:road_keeper_mobile/utils/errors.dart';
 import 'package:road_keeper_mobile/utils/event.dart';
@@ -48,8 +48,8 @@ class MortGageInputPage extends StatelessWidget {
             ),
             StoreConnector<AppState, MortGageOutPutVm>(
                 distinct: true,
-                converter: MortGageOutPutVm.fromStore,
-                builder: (context, vm) => _CalculateOutputWidget(vm))
+                converter: MortGageOutPutVm.fromCalculatorOutput,
+                builder: (context, vm) => CalculateOutputWidget(vm))
           ])),
     );
   }
@@ -320,17 +320,17 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
   }
 }
 
-class _CalculateOutputWidget extends StatelessWidget {
+class CalculateOutputWidget extends StatelessWidget {
   final MortGageOutPutVm viewModel;
 
-  _CalculateOutputWidget(this.viewModel, {Key key}) : super(key: key);
+  CalculateOutputWidget(this.viewModel, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return _getResultRow(
       creditEndTerm: viewModel.creditMounthCount,
-      totalSum: viewModel.totalSum,
-      overpayment: viewModel.overPay,
+      totalSum: viewModel.totalSumString,
+      overpayment: viewModel.overPayString,
     );
   }
 
@@ -374,7 +374,7 @@ class _CalculateOutputWidget extends StatelessWidget {
 
   Widget _getPaymentWidget() {
     var calculatedCreditPaymentString =
-        viewModel.mortGageViewState.calculatedCreditPayment;
+        viewModel.regularCreditPayment;
     if (calculatedCreditPaymentString == null) return null;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

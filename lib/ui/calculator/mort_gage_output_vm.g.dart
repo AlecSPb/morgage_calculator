@@ -8,25 +8,55 @@ part of 'mort_gage_output_vm.dart';
 
 class _$MortGageOutPutVm extends MortGageOutPutVm {
   @override
-  final MortGageViewState mortGageViewState;
-  @override
   final Function(MortGageAction) storeAction;
+  @override
+  final double creditSum;
+  @override
+  final double totalSum;
+  @override
+  final double overPay;
+  @override
+  final int creditTerm;
+  @override
+  final int percentOverPay;
+  @override
+  final String regularCreditPayment;
 
-  factory _$MortGageOutPutVm([void updates(MortGageOutPutVmBuilder b)]) =>
+  factory _$MortGageOutPutVm(
+          [void Function(MortGageOutPutVmBuilder) updates]) =>
       (new MortGageOutPutVmBuilder()..update(updates)).build();
 
-  _$MortGageOutPutVm._({this.mortGageViewState, this.storeAction}) : super._() {
-    if (mortGageViewState == null) {
-      throw new BuiltValueNullFieldError(
-          'MortGageOutPutVm', 'mortGageViewState');
-    }
+  _$MortGageOutPutVm._(
+      {this.storeAction,
+      this.creditSum,
+      this.totalSum,
+      this.overPay,
+      this.creditTerm,
+      this.percentOverPay,
+      this.regularCreditPayment})
+      : super._() {
     if (storeAction == null) {
       throw new BuiltValueNullFieldError('MortGageOutPutVm', 'storeAction');
+    }
+    if (creditSum == null) {
+      throw new BuiltValueNullFieldError('MortGageOutPutVm', 'creditSum');
+    }
+    if (totalSum == null) {
+      throw new BuiltValueNullFieldError('MortGageOutPutVm', 'totalSum');
+    }
+    if (overPay == null) {
+      throw new BuiltValueNullFieldError('MortGageOutPutVm', 'overPay');
+    }
+    if (creditTerm == null) {
+      throw new BuiltValueNullFieldError('MortGageOutPutVm', 'creditTerm');
+    }
+    if (percentOverPay == null) {
+      throw new BuiltValueNullFieldError('MortGageOutPutVm', 'percentOverPay');
     }
   }
 
   @override
-  MortGageOutPutVm rebuild(void updates(MortGageOutPutVmBuilder b)) =>
+  MortGageOutPutVm rebuild(void Function(MortGageOutPutVmBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -38,20 +68,39 @@ class _$MortGageOutPutVm extends MortGageOutPutVm {
     if (identical(other, this)) return true;
     final _$dynamicOther = other as dynamic;
     return other is MortGageOutPutVm &&
-        mortGageViewState == other.mortGageViewState &&
-        storeAction == _$dynamicOther.storeAction;
+        storeAction == _$dynamicOther.storeAction &&
+        creditSum == other.creditSum &&
+        totalSum == other.totalSum &&
+        overPay == other.overPay &&
+        creditTerm == other.creditTerm &&
+        percentOverPay == other.percentOverPay &&
+        regularCreditPayment == other.regularCreditPayment;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, mortGageViewState.hashCode), storeAction.hashCode));
+    return $jf($jc(
+        $jc(
+            $jc(
+                $jc(
+                    $jc($jc($jc(0, storeAction.hashCode), creditSum.hashCode),
+                        totalSum.hashCode),
+                    overPay.hashCode),
+                creditTerm.hashCode),
+            percentOverPay.hashCode),
+        regularCreditPayment.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('MortGageOutPutVm')
-          ..add('mortGageViewState', mortGageViewState)
-          ..add('storeAction', storeAction))
+          ..add('storeAction', storeAction)
+          ..add('creditSum', creditSum)
+          ..add('totalSum', totalSum)
+          ..add('overPay', overPay)
+          ..add('creditTerm', creditTerm)
+          ..add('percentOverPay', percentOverPay)
+          ..add('regularCreditPayment', regularCreditPayment))
         .toString();
   }
 }
@@ -60,23 +109,48 @@ class MortGageOutPutVmBuilder
     implements Builder<MortGageOutPutVm, MortGageOutPutVmBuilder> {
   _$MortGageOutPutVm _$v;
 
-  MortGageViewStateBuilder _mortGageViewState;
-  MortGageViewStateBuilder get mortGageViewState =>
-      _$this._mortGageViewState ??= new MortGageViewStateBuilder();
-  set mortGageViewState(MortGageViewStateBuilder mortGageViewState) =>
-      _$this._mortGageViewState = mortGageViewState;
-
   Function(MortGageAction) _storeAction;
   Function(MortGageAction) get storeAction => _$this._storeAction;
   set storeAction(Function(MortGageAction) storeAction) =>
       _$this._storeAction = storeAction;
 
+  double _creditSum;
+  double get creditSum => _$this._creditSum;
+  set creditSum(double creditSum) => _$this._creditSum = creditSum;
+
+  double _totalSum;
+  double get totalSum => _$this._totalSum;
+  set totalSum(double totalSum) => _$this._totalSum = totalSum;
+
+  double _overPay;
+  double get overPay => _$this._overPay;
+  set overPay(double overPay) => _$this._overPay = overPay;
+
+  int _creditTerm;
+  int get creditTerm => _$this._creditTerm;
+  set creditTerm(int creditTerm) => _$this._creditTerm = creditTerm;
+
+  int _percentOverPay;
+  int get percentOverPay => _$this._percentOverPay;
+  set percentOverPay(int percentOverPay) =>
+      _$this._percentOverPay = percentOverPay;
+
+  String _regularCreditPayment;
+  String get regularCreditPayment => _$this._regularCreditPayment;
+  set regularCreditPayment(String regularCreditPayment) =>
+      _$this._regularCreditPayment = regularCreditPayment;
+
   MortGageOutPutVmBuilder();
 
   MortGageOutPutVmBuilder get _$this {
     if (_$v != null) {
-      _mortGageViewState = _$v.mortGageViewState?.toBuilder();
       _storeAction = _$v.storeAction;
+      _creditSum = _$v.creditSum;
+      _totalSum = _$v.totalSum;
+      _overPay = _$v.overPay;
+      _creditTerm = _$v.creditTerm;
+      _percentOverPay = _$v.percentOverPay;
+      _regularCreditPayment = _$v.regularCreditPayment;
       _$v = null;
     }
     return this;
@@ -91,29 +165,21 @@ class MortGageOutPutVmBuilder
   }
 
   @override
-  void update(void updates(MortGageOutPutVmBuilder b)) {
+  void update(void Function(MortGageOutPutVmBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$MortGageOutPutVm build() {
-    _$MortGageOutPutVm _$result;
-    try {
-      _$result = _$v ??
-          new _$MortGageOutPutVm._(
-              mortGageViewState: mortGageViewState.build(),
-              storeAction: storeAction);
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'mortGageViewState';
-        mortGageViewState.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'MortGageOutPutVm', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result = _$v ??
+        new _$MortGageOutPutVm._(
+            storeAction: storeAction,
+            creditSum: creditSum,
+            totalSum: totalSum,
+            overPay: overPay,
+            creditTerm: creditTerm,
+            percentOverPay: percentOverPay,
+            regularCreditPayment: regularCreditPayment);
     replace(_$result);
     return _$result;
   }

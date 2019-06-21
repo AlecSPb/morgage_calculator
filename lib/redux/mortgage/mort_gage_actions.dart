@@ -1,7 +1,7 @@
 import 'package:built_value/built_value.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_type.dart';
 
-import 'mort_gate_input_view_state.dart';
+import 'package:road_keeper_mobile/redux/mortgage/state/mort_gate_input_view_state.dart';
 
 part 'mort_gage_actions.g.dart';
 

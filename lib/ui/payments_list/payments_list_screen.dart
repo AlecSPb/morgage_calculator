@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_calc_out_row.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
+import 'package:road_keeper_mobile/ui/calculator/morgage_input_screen.dart';
+import 'package:road_keeper_mobile/ui/calculator/mort_gage_output_vm.dart';
 import 'package:road_keeper_mobile/ui/payments_list/payments_list_vm.dart';
 import 'package:road_keeper_mobile/utils/format_utils.dart';
 
@@ -33,22 +35,25 @@ class _PaymentsListPage extends StatelessWidget {
     return (_vm.paymentsList.length == 0)
         ? Center(child: Text("Расчет не выполнен!"))
         : ListView.separated(
-            separatorBuilder: (context, index) => Divider(),
+            separatorBuilder: (context, index) => (index > 0) ? Divider():Container(),
             itemBuilder: _rowBuilder,
-            itemCount: (_vm.paymentsList.length + 1),
+            itemCount: (_vm.paymentsList.length + 2),
           );
   }
 
   Widget _rowBuilder(BuildContext context, int index) {
-    if(index == 0) return _HeaderRow();
-    var row = _vm.paymentsList[index - 1];
+    if (index == 0) return _getResultHeader();
+    if (index == 1) return _HeaderRow();
+    var row = _vm.paymentsList[index - 2];
     var rowKey = ValueKey<MortGageCalcOutRow>(row);
-    return CreditRowTile(key: rowKey, row: row, index: index);
-    /* return ListTile(
-      key: rowKey,
-      title: Text(index.toString()),
-      subtitle: Text(row.creditResidual.toString()),
-    );*/
+    return CreditRowTile(key: rowKey, row: row, index: index - 1);
+  }
+
+  Widget _getResultHeader() {
+    return StoreConnector<AppState, MortGageOutPutVm>(
+        distinct: true,
+        converter: MortGageOutPutVm.fromGraphOutput,
+        builder: (context, vm) => CalculateOutputWidget(vm));
   }
 }
 

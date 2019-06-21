@@ -5,19 +5,20 @@ import 'package:redux/redux.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_calc_out_row.dart';
 import 'package:road_keeper_mobile/data/models/mort_gage_type.dart';
 import 'package:road_keeper_mobile/redux/mortgage/mort_gage_actions.dart';
-import 'package:road_keeper_mobile/redux/mortgage/mort_gage_result_view_state.dart';
-import 'package:road_keeper_mobile/redux/mortgage/mort_gate_input_view_state.dart';
+import 'package:road_keeper_mobile/redux/mortgage/state/mort_gate_input_view_state.dart';
 import 'package:road_keeper_mobile/utils/errors.dart';
 import 'package:road_keeper_mobile/utils/format_utils.dart';
 
-Reducer<MortGageViewState> mortGageReducer = combineReducers(
-    [TypedReducer<MortGageViewState, CalculateCreditAction>(_calculate)]);
+import 'state/mort_gage_output_state.dart';
+
+Reducer<MortGageOutPutState> mortGageOutPutReducer = combineReducers(
+    [TypedReducer<MortGageOutPutState, CalculateCreditAction>(_calculate)]);
 
 Reducer<MortGageInputViewState> mortGageInputReducer = combineReducers(
     [TypedReducer<MortGageInputViewState, SaveInputDataAction>(_saveInput)]);
 
-MortGageViewState _calculate(
-    MortGageViewState state, CalculateCreditAction action) {
+MortGageOutPutState _calculate(
+    MortGageOutPutState state, CalculateCreditAction action) {
   //учитывать ли планируемый платеж
   var isPlannedPaymentCounted = action.estimatedPayment != null;
   var creditType = action.mortGageType ?? MortGageType.differentiated;
@@ -28,12 +29,20 @@ MortGageViewState _calculate(
   var calculatedCreditPaymentString = (isPlannedPaymentCounted)
       ? null
       : getcalculatedCreditPaymentString(creditType, payments.toList());
-  return MortGageViewState((b) => b
-    ..paymentsList.replace(payments)
+  var calculatorOutput = MortGageCalculatorOutputState((b) => b
+    ..creditTerm = payments.length
     ..totalSum = totalPay
     ..overPay = totalPay - action.creditSum
     ..creditSum = action.creditSum
     ..calculatedCreditPayment = calculatedCreditPaymentString);
+  var graphState = MortGageGraphOutPutState((b) => b
+    ..paymentsList.replace(payments)
+    ..totalSum = totalPay
+    ..overPay = totalPay - action.creditSum
+    ..creditSum = action.creditSum);
+  return state.rebuild((b) => b
+    ..graphState.replace(graphState)
+    ..calculatorState.replace(calculatorOutput));
 }
 
 String getcalculatedCreditPaymentString(
@@ -75,7 +84,7 @@ BuiltList<MortGageCalcOutRow> _calculateDiffCreditPaymentsList(
         throw SnackBarShowException(
             "Планируемый платеж должен быть больше ${getBigDecimalString(paymentRow.totalPayment)}");
       var additionalPayment = plannedPayment - paymentRow.totalPayment;
-      if(additionalPayment > paymentRow.creditResidual)
+      if (additionalPayment > paymentRow.creditResidual)
         additionalPayment = paymentRow.creditResidual;
       var creditResidual = paymentRow.creditResidual - additionalPayment;
       paymentRow = paymentRow.rebuild((b) => b
@@ -108,7 +117,7 @@ BuiltList<MortGageCalcOutRow> _calculateAnnCreditPaymentsList(
         throw SnackBarShowException(
             "Планируемый платеж должен быть больше ${getBigDecimalString(paymentRow.totalPayment)}");
       var additionalPayment = plannedPayment - paymentRow.totalPayment;
-      if(additionalPayment > paymentRow.creditResidual)
+      if (additionalPayment > paymentRow.creditResidual)
         additionalPayment = paymentRow.creditResidual;
       var creditResidual = paymentRow.creditResidual - additionalPayment;
       paymentRow = paymentRow.rebuild((b) => b
