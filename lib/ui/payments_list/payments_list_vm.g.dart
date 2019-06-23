@@ -9,13 +9,20 @@ part of 'payments_list_vm.dart';
 class _$PaymentsListVm extends PaymentsListVm {
   @override
   final BuiltList<MortGageCalcOutRow> paymentsList;
+  @override
+  final Function(int index, double additionalPaymentl) setAddPaymentCallback;
 
   factory _$PaymentsListVm([void Function(PaymentsListVmBuilder) updates]) =>
       (new PaymentsListVmBuilder()..update(updates)).build();
 
-  _$PaymentsListVm._({this.paymentsList}) : super._() {
+  _$PaymentsListVm._({this.paymentsList, this.setAddPaymentCallback})
+      : super._() {
     if (paymentsList == null) {
       throw new BuiltValueNullFieldError('PaymentsListVm', 'paymentsList');
+    }
+    if (setAddPaymentCallback == null) {
+      throw new BuiltValueNullFieldError(
+          'PaymentsListVm', 'setAddPaymentCallback');
     }
   }
 
@@ -30,18 +37,23 @@ class _$PaymentsListVm extends PaymentsListVm {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is PaymentsListVm && paymentsList == other.paymentsList;
+    final _$dynamicOther = other as dynamic;
+    return other is PaymentsListVm &&
+        paymentsList == other.paymentsList &&
+        setAddPaymentCallback == _$dynamicOther.setAddPaymentCallback;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, paymentsList.hashCode));
+    return $jf(
+        $jc($jc(0, paymentsList.hashCode), setAddPaymentCallback.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('PaymentsListVm')
-          ..add('paymentsList', paymentsList))
+          ..add('paymentsList', paymentsList)
+          ..add('setAddPaymentCallback', setAddPaymentCallback))
         .toString();
   }
 }
@@ -56,11 +68,20 @@ class PaymentsListVmBuilder
   set paymentsList(ListBuilder<MortGageCalcOutRow> paymentsList) =>
       _$this._paymentsList = paymentsList;
 
+  Function(int index, double additionalPaymentl) _setAddPaymentCallback;
+  Function(int index, double additionalPaymentl) get setAddPaymentCallback =>
+      _$this._setAddPaymentCallback;
+  set setAddPaymentCallback(
+          Function(int index, double additionalPaymentl)
+              setAddPaymentCallback) =>
+      _$this._setAddPaymentCallback = setAddPaymentCallback;
+
   PaymentsListVmBuilder();
 
   PaymentsListVmBuilder get _$this {
     if (_$v != null) {
       _paymentsList = _$v.paymentsList?.toBuilder();
+      _setAddPaymentCallback = _$v.setAddPaymentCallback;
       _$v = null;
     }
     return this;
@@ -83,8 +104,10 @@ class PaymentsListVmBuilder
   _$PaymentsListVm build() {
     _$PaymentsListVm _$result;
     try {
-      _$result =
-          _$v ?? new _$PaymentsListVm._(paymentsList: paymentsList.build());
+      _$result = _$v ??
+          new _$PaymentsListVm._(
+              paymentsList: paymentsList.build(),
+              setAddPaymentCallback: setAddPaymentCallback);
     } catch (_) {
       String _$failedField;
       try {

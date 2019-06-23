@@ -29,6 +29,13 @@ abstract class CalculateCreditAction
       _$CalculateCreditAction;
 }
 
+class RecalculateGraphAction implements MortGageAction {
+  final double additionalPayment;
+  final int monthIndex;
+
+  RecalculateGraphAction(this.monthIndex, this.additionalPayment);
+}
+
 class SaveInputDataAction implements MortGageAction {
   MortGageInputViewState inputState;
 

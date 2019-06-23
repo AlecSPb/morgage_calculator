@@ -11,8 +11,10 @@ import 'package:road_keeper_mobile/utils/format_utils.dart';
 
 import 'state/mort_gage_output_state.dart';
 
-Reducer<MortGageOutPutState> mortGageOutPutReducer = combineReducers(
-    [TypedReducer<MortGageOutPutState, CalculateCreditAction>(_calculate)]);
+Reducer<MortGageOutPutState> mortGageOutPutReducer = combineReducers([
+  TypedReducer<MortGageOutPutState, CalculateCreditAction>(_calculate),
+  TypedReducer<MortGageOutPutState, RecalculateGraphAction>(_recalculate)
+]);
 
 Reducer<MortGageInputViewState> mortGageInputReducer = combineReducers(
     [TypedReducer<MortGageInputViewState, SaveInputDataAction>(_saveInput)]);
@@ -21,7 +23,8 @@ MortGageOutPutState _calculate(
     MortGageOutPutState state, CalculateCreditAction action) {
   //учитывать ли планируемый платеж
   var isPlannedPaymentCounted = action.estimatedPayment != null;
-  var creditType = action.mortGageType ?? MortGageType.differentiated;
+  var creditType = action.mortGageType;
+  if (creditType == null) throw SnackBarShowException("Обозначте тип кредита");
   var payments = (creditType == MortGageType.differentiated)
       ? _calculateDiffCreditPaymentsList(action)
       : _calculateAnnCreditPaymentsList(action);
@@ -36,6 +39,9 @@ MortGageOutPutState _calculate(
     ..creditSum = action.creditSum
     ..calculatedCreditPayment = calculatedCreditPaymentString);
   var graphState = MortGageGraphOutPutState((b) => b
+    ..initCreditTerm = action.creditTerm
+    ..creditPercents = action.creditPercents
+    ..mortGageType = creditType
     ..paymentsList.replace(payments)
     ..totalSum = totalPay
     ..overPay = totalPay - action.creditSum
@@ -43,6 +49,25 @@ MortGageOutPutState _calculate(
   return state.rebuild((b) => b
     ..graphState.replace(graphState)
     ..calculatorState.replace(calculatorOutput));
+}
+
+MortGageOutPutState _recalculate(
+    MortGageOutPutState state, RecalculateGraphAction action) {
+  var graph = state.graphState;
+  var newPaymentList = _recalculatePaymentList(
+      graph.paymentsList,
+      graph.mortGageType,
+      graph.creditSum,
+      graph.creditPercents,
+      graph.initCreditTerm,
+      action.monthIndex,
+      action.additionalPayment);
+  var totalPay = _calculateTotalPay(newPaymentList.toList());
+  var newGraph = graph.rebuild((b) => b
+    ..paymentsList.replace(newPaymentList)
+    ..overPay = totalPay - graph.creditSum
+    ..totalSum = totalPay);
+  return state.rebuild((b) => b..graphState.replace(newGraph));
 }
 
 String getcalculatedCreditPaymentString(
@@ -129,6 +154,50 @@ BuiltList<MortGageCalcOutRow> _calculateAnnCreditPaymentsList(
     currentCreditResidual = paymentRow.creditResidual;
   }
   return BuiltList(result);
+}
+
+BuiltList<MortGageCalcOutRow> _recalculatePaymentList(
+    BuiltList<MortGageCalcOutRow> paymentsList,
+    MortGageType creditType,
+    double creditSum,
+    double creditPercents,
+    int creditTerm,
+    int monthIndex,
+    double addPayment) {
+  assert(monthIndex <= (paymentsList.length - 1));
+  assert(creditType != null);
+  //индекс замыкающего месяца для которого пересчет не требуется
+  var lastUnchangedIndex = monthIndex - 1;
+
+  var newPaymentList = (lastUnchangedIndex >= 0)
+      ? paymentsList.sublist(0, monthIndex).toList()
+      : List<MortGageCalcOutRow>();
+
+  var currentCreditResidual = (monthIndex == 0)
+      ? creditSum
+      : paymentsList[monthIndex - 1].creditResidual;
+
+  for (var i = monthIndex; i < creditTerm; i++) {
+    var monthCounter = creditTerm - i;
+    var paymentRow = (creditType == MortGageType.differentiated)
+        ? _calculateDiffPaymentRow(
+            currentCreditResidual, creditPercents, monthCounter)
+        : _calculateAnnPaymentRow(
+            currentCreditResidual, creditPercents, monthCounter);
+    var additionalPayment = (i == monthIndex)
+        ? addPayment
+        : paymentsList.elementAt(i)?.additionalPayment ?? 0;
+    if (additionalPayment > paymentRow.creditResidual)
+      additionalPayment = paymentRow.creditResidual;
+    var creditResidual = paymentRow.creditResidual - additionalPayment;
+    paymentRow = paymentRow.rebuild((b) => b
+      ..additionalPayment = additionalPayment
+      ..creditResidual = creditResidual);
+    newPaymentList.add(paymentRow);
+    currentCreditResidual = creditResidual;
+  }
+
+  return BuiltList(newPaymentList);
 }
 
 double _calculateTotalPay(List<MortGageCalcOutRow> pays) {

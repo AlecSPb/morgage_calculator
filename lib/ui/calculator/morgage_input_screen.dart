@@ -139,7 +139,7 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
               focusNode: _creditSumFocusNode,
               inputFormatters: [
                 WhitelistingTextInputFormatter.digitsOnly,
-                _NumberDigitTextFormatter()
+                NumberDigitTextFormatter()
               ],
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.next,
@@ -218,7 +218,7 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       WhitelistingTextInputFormatter.digitsOnly,
-                      _NumberDigitTextFormatter()
+                      NumberDigitTextFormatter()
                     ],
                     onSaved: (val) => _planned_payment =
                         double.tryParse(_removeWhiteSpaces(val)) ?? 0.0,
@@ -387,7 +387,7 @@ class CalculateOutputWidget extends StatelessWidget {
 }
 
 ///Format incoming numeric text to fit the format of 1 000 000
-class _NumberDigitTextFormatter extends TextInputFormatter {
+class NumberDigitTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {

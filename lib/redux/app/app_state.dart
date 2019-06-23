@@ -30,6 +30,9 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
           ..totalSum = 0.0
           ..overPay = 0.0).toBuilder()
         ..graphState = MortGageGraphOutPutState((b) => b
+          ..creditPercents = 0
+          ..initCreditTerm = 0
+          ..mortGageType = MortGageType.annuity
           ..paymentsList =
               ListBuilder<MortGageCalcOutRow>(List<MortGageCalcOutRow>(0))
           ..creditSum = 0.0

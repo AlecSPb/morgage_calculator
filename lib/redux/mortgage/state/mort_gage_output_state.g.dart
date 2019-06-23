@@ -283,13 +283,25 @@ class _$MortGageGraphOutPutState extends MortGageGraphOutPutState {
   final double totalSum;
   @override
   final double overPay;
+  @override
+  final MortGageType mortGageType;
+  @override
+  final double creditPercents;
+  @override
+  final int initCreditTerm;
 
   factory _$MortGageGraphOutPutState(
           [void Function(MortGageGraphOutPutStateBuilder) updates]) =>
       (new MortGageGraphOutPutStateBuilder()..update(updates)).build();
 
   _$MortGageGraphOutPutState._(
-      {this.paymentsList, this.creditSum, this.totalSum, this.overPay})
+      {this.paymentsList,
+      this.creditSum,
+      this.totalSum,
+      this.overPay,
+      this.mortGageType,
+      this.creditPercents,
+      this.initCreditTerm})
       : super._() {
     if (paymentsList == null) {
       throw new BuiltValueNullFieldError(
@@ -305,6 +317,18 @@ class _$MortGageGraphOutPutState extends MortGageGraphOutPutState {
     }
     if (overPay == null) {
       throw new BuiltValueNullFieldError('MortGageGraphOutPutState', 'overPay');
+    }
+    if (mortGageType == null) {
+      throw new BuiltValueNullFieldError(
+          'MortGageGraphOutPutState', 'mortGageType');
+    }
+    if (creditPercents == null) {
+      throw new BuiltValueNullFieldError(
+          'MortGageGraphOutPutState', 'creditPercents');
+    }
+    if (initCreditTerm == null) {
+      throw new BuiltValueNullFieldError(
+          'MortGageGraphOutPutState', 'initCreditTerm');
     }
   }
 
@@ -324,15 +348,24 @@ class _$MortGageGraphOutPutState extends MortGageGraphOutPutState {
         paymentsList == other.paymentsList &&
         creditSum == other.creditSum &&
         totalSum == other.totalSum &&
-        overPay == other.overPay;
+        overPay == other.overPay &&
+        mortGageType == other.mortGageType &&
+        creditPercents == other.creditPercents &&
+        initCreditTerm == other.initCreditTerm;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, paymentsList.hashCode), creditSum.hashCode),
-            totalSum.hashCode),
-        overPay.hashCode));
+        $jc(
+            $jc(
+                $jc(
+                    $jc($jc($jc(0, paymentsList.hashCode), creditSum.hashCode),
+                        totalSum.hashCode),
+                    overPay.hashCode),
+                mortGageType.hashCode),
+            creditPercents.hashCode),
+        initCreditTerm.hashCode));
   }
 
   @override
@@ -341,7 +374,10 @@ class _$MortGageGraphOutPutState extends MortGageGraphOutPutState {
           ..add('paymentsList', paymentsList)
           ..add('creditSum', creditSum)
           ..add('totalSum', totalSum)
-          ..add('overPay', overPay))
+          ..add('overPay', overPay)
+          ..add('mortGageType', mortGageType)
+          ..add('creditPercents', creditPercents)
+          ..add('initCreditTerm', initCreditTerm))
         .toString();
   }
 }
@@ -369,6 +405,21 @@ class MortGageGraphOutPutStateBuilder
   double get overPay => _$this._overPay;
   set overPay(double overPay) => _$this._overPay = overPay;
 
+  MortGageType _mortGageType;
+  MortGageType get mortGageType => _$this._mortGageType;
+  set mortGageType(MortGageType mortGageType) =>
+      _$this._mortGageType = mortGageType;
+
+  double _creditPercents;
+  double get creditPercents => _$this._creditPercents;
+  set creditPercents(double creditPercents) =>
+      _$this._creditPercents = creditPercents;
+
+  int _initCreditTerm;
+  int get initCreditTerm => _$this._initCreditTerm;
+  set initCreditTerm(int initCreditTerm) =>
+      _$this._initCreditTerm = initCreditTerm;
+
   MortGageGraphOutPutStateBuilder();
 
   MortGageGraphOutPutStateBuilder get _$this {
@@ -377,6 +428,9 @@ class MortGageGraphOutPutStateBuilder
       _creditSum = _$v.creditSum;
       _totalSum = _$v.totalSum;
       _overPay = _$v.overPay;
+      _mortGageType = _$v.mortGageType;
+      _creditPercents = _$v.creditPercents;
+      _initCreditTerm = _$v.initCreditTerm;
       _$v = null;
     }
     return this;
@@ -404,7 +458,10 @@ class MortGageGraphOutPutStateBuilder
               paymentsList: paymentsList.build(),
               creditSum: creditSum,
               totalSum: totalSum,
-              overPay: overPay);
+              overPay: overPay,
+              mortGageType: mortGageType,
+              creditPercents: creditPercents,
+              initCreditTerm: initCreditTerm);
     } catch (_) {
       String _$failedField;
       try {
