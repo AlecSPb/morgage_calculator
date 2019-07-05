@@ -169,7 +169,7 @@ class _AddPaymentCorrectionDialogState
   void initState() {
     super.initState();
     _addPaymentTextController =
-        TextEditingController(text: widget.row.additionalPayment.toString());
+        TextEditingController(text: getBigDecimalString(widget.row.additionalPayment));
   }
 
   double get _addPaymentValue =>

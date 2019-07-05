@@ -26,25 +26,46 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MortGage calculator'),
-      ),
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(CustomIcons.calc),
-            title: Text('Calculator'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.view_list),
-            title: Text('Payments'),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0,
+      child: Scaffold(
+        body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled){
+              return [
+                SliverAppBar(
+                  elevation: 0,
+                  centerTitle: true,
+                  pinned: true,
+                  floating: true,
+                  title: const Text('MortGage calculator'),
+                  forceElevated: innerBoxIsScrolled,
+                  bottom: TabBar(
+                      tabs:[
+                        Tab(icon:  Icon(CustomIcons.calc)),
+                        Tab(icon: Icon(Icons.view_list))
+                      ]
+                  ),
+                )
+              ];
+            },
+            body: TabBarView(children: _widgetOptions))
+        //body: _widgetOptions.elementAt(_selectedIndex),
+       /* bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(CustomIcons.calc),
+              title: Text('Calculator'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.view_list),
+              title: Text('Payments'),
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.amber[800],
+          onTap: _onItemTapped,
+        ),*/
       ),
     );
   }

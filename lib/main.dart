@@ -30,7 +30,9 @@ class MyApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          brightness: Brightness.light,
+          primarySwatch: Colors.lightGreen,
+         // scaffoldBackgroundColor: Colors.lightGreen
         ),
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,
