@@ -10,6 +10,7 @@ import 'package:road_keeper_mobile/ui/calculator/mort_gage_input_vm.dart';
 import 'package:road_keeper_mobile/utils/errors.dart';
 import 'package:road_keeper_mobile/utils/event.dart';
 
+import '../../constants.dart';
 import 'mort_gage_output_vm.dart';
 
 class MortGageInputPage extends StatelessWidget {
@@ -30,12 +31,15 @@ class MortGageInputPage extends StatelessWidget {
               builder: (context, errorEvent) {
                 var error = errorEvent?.dataIfNotHandled;
                 if (error is SnackBarShowException) {
-                  WidgetsBinding.instance.addPostFrameCallback((_){
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
                     Scaffold.of(context)
                         .showSnackBar(SnackBar(content: Text(error.message)));
                   });
                 }
-                return Container(width: 0.0,height: 0.0,);
+                return Container(
+                  width: 0.0,
+                  height: 0.0,
+                );
               },
             ),
             StoreConnector<AppState, MortGageInputVm>(
@@ -271,23 +275,38 @@ class _MortGageInputWidgetState extends State<_MortGageInputWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            ChoiceChip(
-              label: Text("Аннуитетный"),
-              selected: _mortGageType == MortGageType.annuity,
-              onSelected: (bool selected) {
-                setState(() {
-                  _mortGageType = selected ? MortGageType.annuity : null;
-                });
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Radio(
+                  value: MortGageType.annuity,
+                  groupValue: _mortGageType,
+                  onChanged: (value) {
+                    setState(() {
+                      _mortGageType = value;
+                    });
+                  },
+                ),
+                Text(
+                  "Аннуитетный"
+                )
+              ],
             ),
-            ChoiceChip(
-              label: Text("Дифференцированный"),
-              selected: _mortGageType == MortGageType.differentiated,
-              onSelected: (bool selected) {
-                setState(() {
-                  _mortGageType = selected ? MortGageType.differentiated : null;
-                });
-              },
+            Row(
+              children: <Widget>[
+                Radio(
+                  value: MortGageType.differentiated,
+                  groupValue: _mortGageType,
+                  onChanged: (value) {
+                    setState(() {
+                      _mortGageType = value;
+                    });
+                  },
+                ),
+                Text(
+                  "Дифференцированный"
+                )
+              ],
             ),
           ],
         ),
@@ -328,59 +347,88 @@ class CalculateOutputWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _getResultRow(
+      context,
       creditEndTerm: viewModel.creditMounthCount,
       totalSum: viewModel.totalSumString,
       overpayment: viewModel.overPayString,
     );
   }
 
-  Widget _getResultRow(
+  Widget _getResultRow(BuildContext context,
       {String creditEndTerm, String totalSum, String overpayment}) {
+    var textTheme = Theme.of(context).textTheme;
+    var titleTextStyle = textTheme.body1.copyWith(
+        fontFamily: 'Comfortaa',
+        color: CustomThemeColors.primaryColor,
+        fontWeight: FontWeight.bold);
+    var secondaryTextStyle = textTheme.body1.copyWith(
+        fontFamily: 'Comfortaa',
+        color: CustomThemeColors.secondaryColor,
+        fontWeight: FontWeight.bold);
+
     List<Widget> widgets = [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      Column(
         children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                "Срок погашения:",
-                textAlign: TextAlign.center,
-              ),
-              Text(creditEndTerm ?? "_")
+              Text("Срок погашения:",
+                  textAlign: TextAlign.center, style: titleTextStyle),
+              Text(creditEndTerm ?? "_", style: secondaryTextStyle)
             ],
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[Text("Общая сумма:"), Text(totalSum ?? "_")],
+          SizedBox(
+            height: 8.0,
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[Text("Переплата:"), Text(overpayment ?? "_")],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text("Общая сумма:", style: titleTextStyle),
+              Text(totalSum ?? "_", style: secondaryTextStyle)
+            ],
+          ),
+          SizedBox(
+            height: 8.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text("Переплата:", style: titleTextStyle),
+              Text(overpayment ?? "_", style: secondaryTextStyle)
+            ],
           ),
         ],
       ),
     ];
-    var paymentWidget = _getPaymentWidget();
+    var paymentWidget = _getPaymentWidget(titleTextStyle, secondaryTextStyle);
     if (paymentWidget != null) {
       widgets.add(SizedBox(height: 16.0));
       widgets.add(paymentWidget);
       widgets.add(SizedBox(height: 16.0));
     }
-    return Column(
-      children: widgets,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        color: CustomThemeColors.cardBackgroundColor.withOpacity(0.4),
+      ),
+      padding: EdgeInsets.all(16),
+      child: Column(
+        children: widgets,
+      ),
     );
   }
 
-  Widget _getPaymentWidget() {
-    var calculatedCreditPaymentString =
-        viewModel.regularCreditPayment;
+  Widget _getPaymentWidget(TextStyle titleStyle, TextStyle secondaryStyle) {
+    var calculatedCreditPaymentString = viewModel.regularCreditPayment;
     if (calculatedCreditPaymentString == null) return null;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text("Eжемесячный взнос:"),
-        Text(calculatedCreditPaymentString),
+        Text(
+          "Eжемесячный взнос:",
+          style: titleStyle,
+        ),
+        Text(calculatedCreditPaymentString, style: secondaryStyle),
       ],
     );
   }

@@ -7,6 +7,7 @@ import 'package:road_keeper_mobile/redux/app/app_middleware.dart';
 import 'package:road_keeper_mobile/redux/app/app_reducer.dart';
 import 'package:road_keeper_mobile/redux/app/app_state.dart';
 
+import 'constants.dart';
 import 'ui/home_page.dart';
 
 void main() {
@@ -31,8 +32,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData(
           brightness: Brightness.light,
-          primarySwatch: Colors.lightGreen,
-         // scaffoldBackgroundColor: Colors.lightGreen
+          primaryColor: CustomThemeColors.primaryColor,
+          accentColor: CustomThemeColors.secondaryColor,
+          scaffoldBackgroundColor: CustomThemeColors.backgroundColor,
+          dividerColor: CustomThemeColors.primaryLight
         ),
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,

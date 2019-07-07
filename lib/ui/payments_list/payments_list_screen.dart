@@ -62,10 +62,13 @@ class _PaymentsListPage extends StatelessWidget {
   }
 
   Widget _getResultHeader() {
-    return StoreConnector<AppState, MortGageOutPutVm>(
-        distinct: true,
-        converter: MortGageOutPutVm.fromGraphOutput,
-        builder: (context, vm) => CalculateOutputWidget(vm));
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+      child: StoreConnector<AppState, MortGageOutPutVm>(
+          distinct: true,
+          converter: MortGageOutPutVm.fromGraphOutput,
+          builder: (context, vm) => CalculateOutputWidget(vm)),
+    );
   }
 }
 
